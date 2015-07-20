@@ -36,22 +36,18 @@ public class SpriteRenderer {
 
         GL2 gl = drawable.getGL().getGL2();
 
-        Vector scale = transform.scale.clone();
+        Vector scale = transform.scale.toFixed();
         float rotation = transform.rotation;
-        Vector position = transform.position;
+        Vector position = transform.position.toFixed();
 
-        Vector screenScale = camera.getHalfsize();
-        screenScale.x = 1 / screenScale.x * sprite.getAspectRatio();
-        screenScale.y = 1 / screenScale.y;
-        screenScale = screenScale.toFixed();
-
-        Vector scaledOffset = sprite.offset.clone().multiply(scale).multiply(-1, -1).rotate(rotation).multiply(screenScale).toFixed();
-        Vector screenPos = camera.localize(position).toFixed();
-
-        Vector bl = screenPos.add(scaledOffset);
-        Vector tl = bl.clone().add(new Vector(0, scale.y).rotate(rotation).multiply(screenScale));
-        Vector tr = bl.clone().add(new Vector(scale.x, scale.y).rotate(rotation).multiply(screenScale));
-        Vector br = bl.clone().add(new Vector(scale.x, 0).rotate(rotation).multiply(screenScale));
+        Vector bl = position.add(sprite.offset.clone().rotate(rotation)).toFixed();
+        Vector tl = bl.add(Vector.up().multiply(scale).rotate(rotation)).toFixed();
+        Vector tr = tl.add(Vector.right().multiply(scale).rotate(rotation));
+        Vector br = bl.add(Vector.right().multiply(scale).rotate(rotation));
+        bl = Camera.main().localize(bl);
+        br = Camera.main().localize(br);
+        tl = Camera.main().localize(tl);
+        tr = Camera.main().localize(tr);
 
         if(sprite.getTexture() != null) {
             gl.glEnable(3553);

@@ -29,6 +29,26 @@ public class Texture2D
         }
     }
 
+    private boolean pointFilter = true;
+
+    public void enablePointFilter() {
+        for (int i = 0; i < this.hTex.size(); i++) {
+            TexContainer container = ((TexContainer)this.hTex.elementAt(i));
+            Texture tex = container.hText;
+            tex.setTexParameterf(container.kGL2, GL.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+        }
+        pointFilter = true;
+    }
+
+    public void enableAAFilter() {
+        for (int i = 0; i < this.hTex.size(); i++) {
+            TexContainer container = ((TexContainer)this.hTex.elementAt(i));
+            Texture tex = container.hText;
+            tex.setTexParameterf(container.kGL2, GL.GL_TEXTURE_MAG_FILTER, GL2.GL_INTERPOLATE);
+        }
+        pointFilter = false;
+    }
+
     public void loadGLTexture(GL2 gl)
     {
         boolean lDa = false;
@@ -43,7 +63,9 @@ public class Texture2D
                 lText = TextureIO.newTexture(new File(this.zDateiname), true);
                 lText.setTexParameteri(gl, 10242, 10497);
                 lText.setTexParameteri(gl, 10243, 10497);
-                lText.setTexParameterf(gl, GL.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+                if(pointFilter) {
+                    lText.setTexParameterf(gl, GL.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+                }
             } catch (Exception e) {
                 System.out.println(e.toString() + ": " + this.zDateiname);
             }

@@ -4,6 +4,15 @@ package net.jgl2d.math;
  * Created by peter on 7/18/15.
  */
 public class Vector {
+
+    public static Vector right() {
+        return new Vector(1,0);
+    }
+
+    public static Vector up() {
+        return new Vector(0,1);
+    }
+
     public float x, y;
     public Vector(float x, float y) {
         this.x = x;

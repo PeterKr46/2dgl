@@ -4,13 +4,15 @@ import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
 
 import javax.swing.event.MouseInputListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 /**
  * Created by peter on 7/19/15.
  */
-public class Input implements MouseMotionListener, MouseInputListener {
+public class Input implements MouseMotionListener, MouseInputListener, KeyListener {
 
     public static Vector getMousePosition() {
         return mousePosition.clone();
@@ -95,5 +97,22 @@ public class Input implements MouseMotionListener, MouseInputListener {
 
     public static boolean isRightHeld() {
         return rightHeld;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getKeyChar() == 'd') {
+            Camera.main().toggleDebugging();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
     }
 }

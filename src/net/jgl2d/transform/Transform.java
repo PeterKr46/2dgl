@@ -68,6 +68,9 @@ public class Transform {
             renderer.draw(Camera.main(), drawable);
         }
         drawArrows(drawable);
+    }
+
+    public void updateBehaviours(GLAutoDrawable drawable) {
         for(Behaviour behaviour : behaviours) {
             behaviour.update(drawable);
         }

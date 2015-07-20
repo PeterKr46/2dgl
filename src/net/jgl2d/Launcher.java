@@ -9,6 +9,7 @@ import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.sprite.texture.SpriteSheet;
+import net.jgl2d.sprite.texture.font.Font;
 import net.jgl2d.sys.BehaviourInspector;
 import net.jgl2d.transform.Transform;
 
@@ -45,7 +46,7 @@ public class Launcher {
         t.position = new Vector(-1,0);
         t.rotation = 35;
         t.addBehaviour(BoxCollider.class);
-        t.addBehaviour(TestBehaviour.class);
+        ((TestBehaviour)t.addBehaviour(TestBehaviour.class)).font = Font.load("/home/peter/Desktop/tilesets/font.png");;
 
         for(int i = 1; i < 3; i++) {
             t = Transform.createEmpty("T #" + i);

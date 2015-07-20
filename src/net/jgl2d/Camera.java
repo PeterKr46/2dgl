@@ -6,6 +6,8 @@ import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.SpriteRenderer;
 import net.jgl2d.transform.Transform;
 
+import java.util.List;
+
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
@@ -60,6 +62,7 @@ public class Camera implements GLEventListener {
         Input input = new Input();
         canvas.addMouseMotionListener(input);
         canvas.addMouseListener(input);
+        canvas.addKeyListener(input);
     }
 
     private Vector position = new Vector(0,0);
@@ -171,8 +174,13 @@ public class Camera implements GLEventListener {
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         drawGrid(drawable);
-        for(Transform transform : Transform.getAllTransforms()) {
+        List<Transform> transforms = Transform.getAllTransforms();
+        for(Transform transform : transforms) {
             transform.update(drawable);
+        }
+
+        for(Transform transform : transforms) {
+            transform.updateBehaviours(drawable);
         }
     }
 
@@ -200,5 +208,9 @@ public class Camera implements GLEventListener {
 
     public float getAspectRatio() {
         return aspectRatio;
+    }
+
+    public void toggleDebugging() {
+        debuggingEnabled = !debuggingEnabled;
     }
 }
