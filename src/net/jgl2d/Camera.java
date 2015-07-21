@@ -1,5 +1,7 @@
 package net.jgl2d;
 
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import net.jgl2d.input.Input;
 import net.jgl2d.math.Vector;
@@ -8,8 +10,6 @@ import net.jgl2d.transform.Transform;
 
 import java.util.List;
 
-import javax.media.opengl.*;
-import javax.media.opengl.awt.GLCanvas;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

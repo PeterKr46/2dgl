@@ -1,13 +1,11 @@
 package net.jgl2d.behaviour;
 
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
-import net.jgl2d.sprite.texture.font.Font;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
-
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Created by peter on 7/19/15.

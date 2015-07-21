@@ -1,9 +1,9 @@
 package net.jgl2d.util;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import net.jgl2d.math.Vector;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 
 /**
  * Created by peter on 7/19/15.

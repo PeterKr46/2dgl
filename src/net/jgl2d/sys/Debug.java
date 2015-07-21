@@ -1,7 +1,5 @@
 package net.jgl2d.sys;
 
-import GLOOP.Sys;
-
 /**
  * Created by peter on 7/19/15.
  */

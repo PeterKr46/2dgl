@@ -1,10 +1,9 @@
 package net.jgl2d.behaviour.animation;
 
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.transform.Transform;
-
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Created by peter on 7/19/15.

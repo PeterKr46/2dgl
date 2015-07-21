@@ -1,11 +1,11 @@
 package net.jgl2d.sprite.texture;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
 import javax.imageio.ImageIO;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

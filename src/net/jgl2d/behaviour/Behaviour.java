@@ -1,8 +1,7 @@
 package net.jgl2d.behaviour;
 
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.transform.Transform;
-
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Created by peter on 7/19/15.

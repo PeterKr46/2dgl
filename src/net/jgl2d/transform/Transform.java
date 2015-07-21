@@ -1,13 +1,13 @@
 package net.jgl2d.transform;
 
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.SpriteRenderer;
 import net.jgl2d.util.QuickDraw;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
