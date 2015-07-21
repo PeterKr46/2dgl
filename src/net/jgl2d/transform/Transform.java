@@ -79,34 +79,44 @@ public class Transform {
     private void drawArrows(GLAutoDrawable drawable) {
         if(Camera.main().debug()) {
             GL2 gl = drawable.getGL().getGL2();
+            Camera cam = Camera.main();
 
             float[] red = new float[] {1,0,0};
             float[] green = new float[] {0,1,0};
 
-            Vector scale = Camera.main().getHalfsize();
-            scale.x = 1 / scale.x;
-            scale.y = 1 / scale.y;
+            Vector center = position.toFixed();
+            float len = cam.getVerticalSize()/5f;
 
-            Vector center = Camera.main().localize(position).toFixed();
-
-            Vector right = new Vector(0.7,0).rotate(rotation).multiply(scale).toFixed();
-            Vector up = new Vector(0,0.7).rotate(rotation).multiply(scale).toFixed();
+            Vector right = new Vector(len,0).rotate(rotation).toFixed();
+            Vector up = new Vector(0,len).rotate(rotation).toFixed();
             Vector rightEnd = center.add(right).toFixed();
             Vector topEnd = center.add(up).toFixed();
 
-            Vector tipA = new Vector(0,-0.25).rotate(rotation).rotate(25).multiply(scale);
-            Vector tipB = new Vector(0,-0.25).rotate(rotation).rotate(-25).multiply(scale);
-            Vector tipC = new Vector(-0.25,0).rotate(rotation).rotate(25).multiply(scale);
-            Vector tipD = new Vector(-0.25,0).rotate(rotation).rotate(-25).multiply(scale);
+            Vector tipA = new Vector(0,-len/3).rotate(rotation).rotate(25).add(topEnd);
+            Vector tipB = new Vector(0,-len/3).rotate(rotation).rotate(-25).add(topEnd);
+            Vector tipC = new Vector(-len/3,0).rotate(rotation).rotate(25).add(rightEnd);
+            Vector tipD = new Vector(-len/3,0).rotate(rotation).rotate(-25).add(rightEnd);
+
+            center = cam.localize(center);
+            rightEnd = cam.localize(rightEnd);
+            topEnd = cam.localize(topEnd);
+            tipA = cam.localize(tipA);
+            tipB = cam.localize(tipB);
+            tipC = cam.localize(tipC);
+            tipD = cam.localize(tipD);
 
             QuickDraw.line(gl, center, rightEnd, green);
             QuickDraw.line(gl, center, topEnd, red);
 
-            QuickDraw.line(gl, rightEnd, rightEnd.add(tipC), green);
-            QuickDraw.line(gl, rightEnd, rightEnd.add(tipD), green);
+            QuickDraw.line(gl, rightEnd, tipC, green);
+            QuickDraw.line(gl, rightEnd, tipD, green);
 
-            QuickDraw.line(gl, topEnd, topEnd.add(tipA), red);
-            QuickDraw.line(gl, topEnd, topEnd.add(tipB), red);
+            QuickDraw.line(gl, topEnd, tipA, red);
+            QuickDraw.line(gl, topEnd, tipB, red);
+
+            Vector scale = Camera.main().getHalfsize();
+            scale.x = 1 / scale.x;
+            scale.y = 1 / scale.y;
 
             //TODO: Clickboxes & dragging circles
             QuickDraw.filledCircle(gl, center, scale, 0.075f, 0.1f, green);

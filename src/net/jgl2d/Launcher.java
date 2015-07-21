@@ -1,16 +1,12 @@
 package net.jgl2d;
 
-import junit.framework.Test;
 import net.jgl2d.behaviour.BoxCollider;
-import net.jgl2d.behaviour.CircleCollider;
 import net.jgl2d.behaviour.TestBehaviour;
 import net.jgl2d.behaviour.animation.Animation;
-import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.sprite.texture.SpriteSheet;
 import net.jgl2d.sprite.texture.font.Font;
-import net.jgl2d.sys.BehaviourInspector;
 import net.jgl2d.transform.Transform;
 
 /**
@@ -18,9 +14,9 @@ import net.jgl2d.transform.Transform;
  */
 public class Launcher {
     public static void main(String[] args) {
-        SpriteSheet sheet = SpriteSheet.load("/home/peter/Desktop/tilesets/door.png");
-        SpriteSheet sheet2 = SpriteSheet.load("/home/peter/Desktop/tilesets/pickup.png");
-        SpriteSheet sheet3 = SpriteSheet.load("/home/peter/Desktop/tilesets/newtiles.png");
+        SpriteSheet sheet = SpriteSheet.load("tilesets/door.png");
+        SpriteSheet sheet2 = SpriteSheet.load("tilesets/pickup.png");
+        SpriteSheet sheet3 = SpriteSheet.load("tilesets/newtiles.png");
 
         Animation anim = new Animation(40);
         anim.setFrame(0, sheet3.getSprite(0));

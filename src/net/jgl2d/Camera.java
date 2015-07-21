@@ -46,7 +46,6 @@ public class Camera implements GLEventListener {
         canvas.addGLEventListener(this);
 
         animator = new FPSAnimator(canvas, 60);
-        animator.add(canvas);
         animator.start();
 
         windowFrame = new Frame("jgl2d");
@@ -63,6 +62,7 @@ public class Camera implements GLEventListener {
         canvas.addMouseMotionListener(input);
         canvas.addMouseListener(input);
         canvas.addKeyListener(input);
+        canvas.addMouseWheelListener(input);
     }
 
     private Vector position = new Vector(0,0);
@@ -212,5 +212,17 @@ public class Camera implements GLEventListener {
 
     public void toggleDebugging() {
         debuggingEnabled = !debuggingEnabled;
+    }
+
+    public void setVerticalSize(float verticalSize) {
+        this.verticalSize = verticalSize;
+    }
+
+    public void setPosition(Vector position) {
+        this.position = position.clone();
+    }
+
+    public float getHorizontalSize() {
+        return verticalSize * aspectRatio;
     }
 }

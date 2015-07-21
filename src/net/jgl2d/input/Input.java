@@ -2,17 +2,15 @@ package net.jgl2d.input;
 
 import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
+import net.jgl2d.sys.Debug;
 
 import javax.swing.event.MouseInputListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 
 /**
  * Created by peter on 7/19/15.
  */
-public class Input implements MouseMotionListener, MouseInputListener, KeyListener {
+public class Input implements MouseMotionListener, MouseInputListener, MouseWheelListener, KeyListener {
 
     public static Vector getMousePosition() {
         return mousePosition.clone();
@@ -23,16 +21,17 @@ public class Input implements MouseMotionListener, MouseInputListener, KeyListen
     }
 
     private static Vector mousePosition = new Vector(0,0);
-    private static boolean leftClick = false, leftHeld = false,
-            rightClick = false, rightHeld = false;
 
     @Override
-    public void mouseDragged(MouseEvent mouseEvent) {
-        if(mouseEvent.getButton() == 1) {
-            leftHeld = true;
-        }
-        if(mouseEvent.getButton() == 3) {
-            rightHeld = true;
+    public void mouseDragged(MouseEvent event) {
+        Camera c = Camera.main();
+        float dx = event.getX() - mousePosition.x;
+        float dy = event.getY() - (c.getScreenHeight() - mousePosition.y);
+        mousePosition = new Vector(event.getX(), c.getScreenHeight() - event.getY());
+        float px = (dx / c.getScreenWidth()) * c.getHorizontalSize();
+        float py = (dy / c.getScreenHeight()) * c.getVerticalSize();
+        if(c.debug()) {
+            c.setPosition(c.getPosition().add(-px, py));
         }
     }
 
@@ -43,60 +42,27 @@ public class Input implements MouseMotionListener, MouseInputListener, KeyListen
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        if(mouseEvent.getButton() == 1) {
-            leftClick = true;
-        }
-        if(mouseEvent.getButton() == 3) {
-            rightClick = true;
-        }
+        mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
     }
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-        if(mouseEvent.getButton() == 1) {
-            leftClick = true;
-            leftHeld = true;
-        }
-        if(mouseEvent.getButton() == 3) {
-            rightClick = true;
-            rightHeld = true;
-        }
+        mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
-        if(mouseEvent.getButton() == 1) {
-            leftHeld = false;
-        }
-        if(mouseEvent.getButton() == 3) {
-            rightHeld = false;
-        }
+        mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
     }
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
-
+        mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
     }
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-
-    }
-
-    public static boolean isRightClick() {
-        return rightClick;
-    }
-
-    public static boolean isLeftClick() {
-        return leftClick;
-    }
-
-    public static boolean isLeftHeld() {
-        return leftHeld;
-    }
-
-    public static boolean isRightHeld() {
-        return rightHeld;
+        mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
     }
 
     @Override
@@ -114,5 +80,13 @@ public class Input implements MouseMotionListener, MouseInputListener, KeyListen
     @Override
     public void keyReleased(KeyEvent keyEvent) {
 
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        Camera c = Camera.main();
+        if(c.debug()) {
+            c.setVerticalSize(c.getVerticalSize() + e.getUnitsToScroll() * 0.3f);
+        }
     }
 }
