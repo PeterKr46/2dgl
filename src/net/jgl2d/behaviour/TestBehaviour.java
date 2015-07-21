@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
+import net.jgl2d.sprite.texture.font.Font;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
 

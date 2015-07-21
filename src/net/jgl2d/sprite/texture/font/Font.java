@@ -1,5 +1,7 @@
 package net.jgl2d.sprite.texture.font;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Rect;
 import net.jgl2d.math.Vector;
@@ -8,8 +10,6 @@ import net.jgl2d.sprite.texture.SpriteSheet;
 import net.jgl2d.sprite.texture.Texture2D;
 import net.jgl2d.sys.Debug;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 import java.io.File;
 import java.util.HashMap;
 
