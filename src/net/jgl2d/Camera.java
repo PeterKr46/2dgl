@@ -63,6 +63,7 @@ public class Camera implements GLEventListener {
         canvas.addMouseListener(input);
         canvas.addKeyListener(input);
         canvas.addMouseWheelListener(input);
+        aspectRatio = ((float)canvas.getWidth()) / canvas.getHeight();
     }
 
     private Vector position = new Vector(0,0);
@@ -91,11 +92,27 @@ public class Camera implements GLEventListener {
         return spriteRenderer.isEnabled(); //TODO
     }
 
+    /**
+     * @param worldPos The global position to convert
+     * @return A Vector containing 0-1f values on both axes, (0,0) is bottom  left.
+     */
     public Vector worldToScreenPos(Vector worldPos) {
-        Vector diff = Vector.difference(position.clone().add(getHalfsize().divide(-1)), worldPos);
-        diff.setX(diff.x / verticalSize * aspectRatio);
-        diff.setY(diff.y / verticalSize);
-        diff.add(-0.5, -0.5);
+        Vector screenPos = localize(worldPos);
+        screenPos.x /= getAspectRatio() * 2;
+        screenPos.x += 0.5;
+        screenPos.y /= 2;
+        screenPos.y += 0.5;
+        return screenPos;
+    }
+    /**
+     * @param worldPos The global position to convert
+     * @return A Vector containing 0 to height/width in pixels, (0,0) is bottom  left.
+     */
+    public Vector worldToPixelPos(Vector worldPos) {
+        Vector diff = Vector.difference(position.clone(), worldPos);
+        diff.setX(diff.x / (verticalSize * aspectRatio) / 2 + 0.5f);
+        diff.setY(diff.y / verticalSize / 2 + 0.5f);
+        diff.multiply(getScreenWidth(), getScreenHeight());
         return diff;
     }
 
@@ -143,6 +160,9 @@ public class Camera implements GLEventListener {
         gl.glVertex2f(-1, 1);
         gl.glEnd();
         gl.glColor3f(1,1,1);
+        if(!debug()) {
+            return;
+        }
         gl.glBegin(GL.GL_LINES);
         Vector min = getMin();
         Vector max = getMax();

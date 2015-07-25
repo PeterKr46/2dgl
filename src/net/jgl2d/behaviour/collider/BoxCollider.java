@@ -1,27 +1,28 @@
-package net.jgl2d.behaviour;
+package net.jgl2d.behaviour.collider;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
+import net.jgl2d.math.area.RectArea;
 import net.jgl2d.math.Vector;
 import net.jgl2d.transform.Transform;
 
 /**
  * Created by peter on 7/19/15.
  */
-public class BoxCollider extends Behaviour {
+public class BoxCollider extends Collider {
     public Vector offset = new Vector(0,0), size = new Vector(1,1);
     public BoxCollider(Transform transform) {
         super(transform);
     }
 
     @Override
-    public void update(GLAutoDrawable drawable) {
+    public void draw(GLAutoDrawable drawable) {
         if(!Camera.main().debug()) {
             return;
         }
         GL2 gl = drawable.getGL().getGL2();
-        Vector scale = transform.scale.clone();
+        Vector scale = transform.scale.clone().multiply(size);
         float rotation = transform.rotation;
         Vector position = transform.position;
 
@@ -46,5 +47,13 @@ public class BoxCollider extends Behaviour {
 
         gl.glEnd();
         gl.glColor3f(1,1,1);
+    }
+
+    public RectArea toArea() {
+        Vector scale = transform.scale.clone().multiply(size);
+        float rotation = transform.rotation;
+        Vector position = transform.position;
+        Vector bl = position.add(offset.clone().rotate(rotation)).toFixed();
+        return new RectArea(bl, rotation, scale.x, scale.y);
     }
 }

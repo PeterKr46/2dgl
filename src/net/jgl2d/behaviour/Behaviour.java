@@ -1,6 +1,7 @@
 package net.jgl2d.behaviour;
 
 import com.jogamp.opengl.GLAutoDrawable;
+import net.jgl2d.behaviour.collider.Collider;
 import net.jgl2d.transform.Transform;
 
 /**
@@ -20,5 +21,8 @@ public abstract class Behaviour {
 
     }
 
+    public void onCollide(Collider collider) {
+
+    }
 
 }

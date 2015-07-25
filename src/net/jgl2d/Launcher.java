@@ -1,8 +1,9 @@
 package net.jgl2d;
 
-import net.jgl2d.behaviour.BoxCollider;
+import net.jgl2d.behaviour.collider.BoxCollider;
 import net.jgl2d.behaviour.TestBehaviour;
 import net.jgl2d.behaviour.animation.Animation;
+import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.sprite.texture.SpriteSheet;
@@ -19,7 +20,7 @@ public class Launcher {
         SpriteSheet sheet3 = SpriteSheet.load("tilesets/newtiles.png");
 
         Animation anim = new Animation(40);
-        anim.setFrame(0, sheet3.getSprite(0));
+        anim.setFrame(0, sheet2.getSprite(0));
         anim.setFrame(5, sheet3.getSprite(1));
         anim.setFrame(10, sheet3.getSprite(2));
         anim.setFrame(15, sheet3.getSprite(3));
@@ -35,22 +36,27 @@ public class Launcher {
         Sprite topREnd = sheet3.getSprite(2);
 
         Camera camera = new Camera();
-        //camera.setDebuggingEnabled(false);
+        camera.setDebuggingEnabled(false);
 
         Transform t = Transform.createEmpty("TL");
         t.addRenderer().setSprite(topLEnd);
-        t.position = new Vector(-1,0);
-        t.rotation = 35;
-        t.addBehaviour(BoxCollider.class);
-        ((TestBehaviour)t.addBehaviour(TestBehaviour.class)).font = Font.load("/home/peter/Desktop/tilesets/font.png");;
-
-        for(int i = 1; i < 3; i++) {
+        t.position = new Vector(0,0);
+        //t.rotation = 35;
+        BoxCollider collA = (BoxCollider) t.addBehaviour(BoxCollider.class);
+        BoxCollider collB = null;
+        ((TestBehaviour) t.addBehaviour(TestBehaviour.class)).font = Font.load("tilesets/font.png");
+        for(float i = 0.95f; i < 3; i+= 0.95) {
             t = Transform.createEmpty("T #" + i);
             t.addRenderer().setSprite(top);
+            collB = (BoxCollider) t.addBehaviour(BoxCollider.class);
             t.position = new Vector(i,0);
+            Animator animator = (Animator) t.addBehaviour(Animator.class);
+            animator.setAnimations(anim, anim2);
+            animator.animation = 1;
         }
         t = Transform.createEmpty("TR");
         t.addRenderer().setSprite(topREnd);
         t.position = new Vector(3,0);
+        //Debug.log(collA.toArea().overlaps(collB.toArea()));
     }
 }

@@ -4,11 +4,14 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.Behaviour;
+import net.jgl2d.input.Input;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.SpriteRenderer;
+import net.jgl2d.sys.Debug;
 import net.jgl2d.util.QuickDraw;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,17 +66,69 @@ public class Transform {
         return renderer;
     }
 
+    //TODO
+    public Behaviour getBehaviour(Class<? extends Behaviour> cls) {
+        for(Behaviour b : behaviours) {
+            if(b.getClass() == cls) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Calls a method on all Behaviours attached to this Transform.
+     * @param methodName Name of the method to invoke on Behaviours
+     * @return true if at least one Behaviour received it.
+     */
+
+    public boolean sendMessage(String methodName) {
+        boolean ret = false;
+        for(Behaviour behaviour : behaviours) {
+            try {
+                Method method = behaviour.getClass().getMethod(methodName);
+                ret = true;
+                method.invoke(behaviour);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Calls a method on all Behaviours attached to this Transform.
+     * @param methodName The name of the method to invoke on Behaviours
+     * @param argTypes An Array of types the method requires as arguments.
+     * @param args The values to pass as arguments.
+     * @return true if at least one Behaviour received it.
+     */
+
+    public boolean sendMessage(String methodName, Class<?>[] argTypes, Object[] args) {
+        boolean ret = false;
+        for(Behaviour behaviour : behaviours) {
+            try {
+                Method method = behaviour.getClass().getMethod(methodName, argTypes);
+                ret = true;
+                method.invoke(behaviour, args);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
+    }
+
     public void update(GLAutoDrawable drawable) {
         if(renderer != null && renderer.isEnabled()) {
             renderer.draw(Camera.main(), drawable);
         }
-        drawArrows(drawable);
     }
 
     public void updateBehaviours(GLAutoDrawable drawable) {
         for(Behaviour behaviour : behaviours) {
             behaviour.update(drawable);
         }
+        drawArrows(drawable);
     }
 
     private void drawArrows(GLAutoDrawable drawable) {
@@ -83,6 +138,7 @@ public class Transform {
 
             float[] red = new float[] {1,0,0};
             float[] green = new float[] {0,1,0};
+            float[] yellow = new float[]{1,1,0};
 
             Vector center = position.toFixed();
             float len = cam.getVerticalSize()/5f;
@@ -118,8 +174,29 @@ public class Transform {
             scale.x = 1 / scale.x;
             scale.y = 1 / scale.y;
 
-            //TODO: Clickboxes & dragging circles
-            QuickDraw.filledCircle(gl, center, scale, 0.075f, 0.1f, green);
+            Vector pp = cam.worldToPixelPos(position);
+            Vector mp = Input.getMousePosition();
+            Vector diff = Vector.difference(pp, mp);
+            float rad = 0.12f * len / (cam.getVerticalSize() * 2);
+            rad *= cam.getScreenHeight();
+            if ((diff.magnitude() < rad && Debug.dragging == null) || Debug.dragging == this) {
+                QuickDraw.filledCircle(gl, center, scale, 0.075f * len, 0.1f, red);
+                if(Input.isLMouseDown() && (Debug.dragging == null || Debug.dragging == this)) {
+                    Debug.dragging = this;
+                }
+            } else {
+                QuickDraw.filledCircle(gl, center, scale, 0.075f * len, 0.1f, yellow);
+            }
+            if(Debug.dragging == this) {
+                position = cam.screenToWorldPos(Input.getPercentiveMousePosition());
+                if(Input.isKeyDown('q')) {
+                    position = new Vector(Math.round(position.x), (int)position.y);
+                }
+            }
         }
+    }
+
+    public String toString() {
+        return "Transform(" + name + ", " + position + ")";
     }
 }

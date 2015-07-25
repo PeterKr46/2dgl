@@ -6,11 +6,16 @@ import net.jgl2d.sys.Debug;
 
 import javax.swing.event.MouseInputListener;
 import java.awt.event.*;
+import java.util.HashMap;
 
 /**
  * Created by peter on 7/19/15.
  */
 public class Input implements MouseMotionListener, MouseInputListener, MouseWheelListener, KeyListener {
+
+
+    private static boolean lMouse;
+    private static HashMap<Character, Boolean> keysPressed = new HashMap<>();
 
     public static Vector getMousePosition() {
         return mousePosition.clone();
@@ -22,6 +27,14 @@ public class Input implements MouseMotionListener, MouseInputListener, MouseWhee
 
     private static Vector mousePosition = new Vector(0,0);
 
+    public static boolean isLMouseDown() {
+        return lMouse;
+    }
+
+    public static boolean isKeyDown(char c) {
+        return keysPressed.containsKey(c) && keysPressed.get(c);
+    }
+
     @Override
     public void mouseDragged(MouseEvent event) {
         Camera c = Camera.main();
@@ -30,7 +43,7 @@ public class Input implements MouseMotionListener, MouseInputListener, MouseWhee
         mousePosition = new Vector(event.getX(), c.getScreenHeight() - event.getY());
         float px = (dx / c.getScreenWidth()) * c.getHorizontalSize();
         float py = (dy / c.getScreenHeight()) * c.getVerticalSize();
-        if(c.debug()) {
+        if(c.debug() && Debug.dragging == null) {
             c.setPosition(c.getPosition().add(-px, py));
         }
     }
@@ -48,11 +61,18 @@ public class Input implements MouseMotionListener, MouseInputListener, MouseWhee
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
         mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
+        if(mouseEvent.getButton() == 1) {
+            lMouse = true;
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
         mousePosition = new Vector(mouseEvent.getX(), Camera.main().getScreenHeight() - mouseEvent.getY());
+        if(mouseEvent.getButton() == 1) {
+            lMouse = false;
+            Debug.dragging = null;
+        }
     }
 
     @Override
@@ -75,11 +95,12 @@ public class Input implements MouseMotionListener, MouseInputListener, MouseWhee
         if(keyEvent.getKeyChar() == 'd') {
             Camera.main().toggleDebugging();
         }
+        keysPressed.put(keyEvent.getKeyChar(), true);
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
-
+        keysPressed.put(keyEvent.getKeyChar(), false);
     }
 
     @Override

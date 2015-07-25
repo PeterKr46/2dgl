@@ -97,6 +97,14 @@ public class Vector {
         return new Vector(to.x - from.x, to.y - from.y);
     }
 
+    public float sqrMagnitude() {
+        return (float) (Math.pow(x,2) + Math.pow(y,2));
+    }
+
+    public float magnitude() {
+        return (float) Math.sqrt(sqrMagnitude());
+    }
+
     public static class FixedVector extends Vector {
 
         public FixedVector(float x, float y) {
