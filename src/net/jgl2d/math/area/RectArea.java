@@ -21,7 +21,7 @@ public class RectArea implements Area {
 
     public boolean contains(Vector position) {
         Vector diff = Vector.difference(this.position, position);
-        diff.rotate(rotation);
+        diff.rotate(-rotation);
         return diff.x >= 0 && diff.x <= size.x && diff.y >= 0 && diff.y <= size.y;
     }
 
@@ -66,5 +66,21 @@ public class RectArea implements Area {
 
     public Vector getCenter() {
         return position.clone().add(size.clone().divide(2).rotate(rotation));
+    }
+
+    public Vector getMin() {
+        return position.clone();
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public float getWidth() {
+        return size.x;
+    }
+
+    public float getHeight() {
+        return size.y;
     }
 }

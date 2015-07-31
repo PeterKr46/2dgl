@@ -235,7 +235,7 @@ public class Camera implements GLEventListener {
     }
 
     public void setVerticalSize(float verticalSize) {
-        this.verticalSize = verticalSize;
+        this.verticalSize = Math.max(0.2f,verticalSize);
     }
 
     public void setPosition(Vector position) {

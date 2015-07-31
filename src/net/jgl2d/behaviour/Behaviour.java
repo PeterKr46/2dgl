@@ -15,6 +15,10 @@ public abstract class Behaviour {
         this.transform = transform;
     }
 
+    public final Transform getTransform() {
+        return transform;
+    }
+
     public abstract void update(GLAutoDrawable drawable);
 
     public void start() {

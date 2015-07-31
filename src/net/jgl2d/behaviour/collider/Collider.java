@@ -15,6 +15,10 @@ public abstract class Collider extends Behaviour {
 
     private static List<Collider> colliders = new ArrayList<>();
 
+    public static List<Collider> getColliders() {
+        return new ArrayList<>(colliders);
+    }
+
     private List<Collider> currentOverlaps = new ArrayList<>();
 
     public Collider(Transform transform) {

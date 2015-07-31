@@ -1,5 +1,6 @@
 package net.jgl2d;
 
+import net.jgl2d.behaviour.CharacterController;
 import net.jgl2d.behaviour.collider.BoxCollider;
 import net.jgl2d.behaviour.TestBehaviour;
 import net.jgl2d.behaviour.animation.Animation;
@@ -40,15 +41,13 @@ public class Launcher {
 
         Transform t = Transform.createEmpty("TL");
         t.addRenderer().setSprite(topLEnd);
-        t.position = new Vector(0,0);
-        //t.rotation = 35;
-        BoxCollider collA = (BoxCollider) t.addBehaviour(BoxCollider.class);
-        BoxCollider collB = null;
+        t.position = new Vector(2,1);
+        t.addBehaviour(CharacterController.class);
         ((TestBehaviour) t.addBehaviour(TestBehaviour.class)).font = Font.load("tilesets/font.png");
         for(float i = 0.95f; i < 3; i+= 0.95) {
             t = Transform.createEmpty("T #" + i);
             t.addRenderer().setSprite(top);
-            collB = (BoxCollider) t.addBehaviour(BoxCollider.class);
+            t.addBehaviour(BoxCollider.class);
             t.position = new Vector(i,0);
             Animator animator = (Animator) t.addBehaviour(Animator.class);
             animator.setAnimations(anim, anim2);
@@ -56,7 +55,7 @@ public class Launcher {
         }
         t = Transform.createEmpty("TR");
         t.addRenderer().setSprite(topREnd);
-        t.position = new Vector(3,0);
+        t.position = new Vector(1,1);
         //Debug.log(collA.toArea().overlaps(collB.toArea()));
     }
 }

@@ -14,14 +14,14 @@ import net.jgl2d.util.QuickDraw;
  */
 public class CircleCollider extends Collider {
     public float radius = 0.5f;
-    public Vector offset = new Vector(0,0);
+    public Vector offset = new Vector(0.5,0.5);
     public CircleCollider(Transform transform) {
         super(transform);
     }
 
     @Override
     public Area toArea() {
-        return new CircleArea(transform.position.clone().add(offset), radius);
+        return new CircleArea(transform.position.clone().add(offset.clone().rotate(transform.rotation)), radius);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CircleCollider extends Collider {
             scale.x = 1 / scale.x;
             scale.y = 1 / scale.y;
 
-            Vector center = Camera.main().localize(transform.position.clone().add(offset));
+            Vector center = Camera.main().localize(transform.position.clone().add(offset.clone().rotate(transform.rotation)));
             QuickDraw.circle(drawable.getGL().getGL2(), center, scale, radius, 0.4f, new float[] {0, 1, 0});
         }
     }

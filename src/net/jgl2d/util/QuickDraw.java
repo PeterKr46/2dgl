@@ -17,12 +17,13 @@ public class QuickDraw {
     }
 
     public static void line(GL2 gl, Vector from, Vector to, float[] rgb) {
-        gl.glColor3f(rgb[0], rgb[1], rgb[2]);
-        gl.glBegin(GL.GL_LINES);
-        gl.glVertex2f(from.x, from.y);
-        gl.glVertex2f(to.x, to.y);
-        gl.glEnd();
-        gl.glColor3f(1, 1, 1);
+        if(rgb.length == 3) {
+            gl.glColor3f(rgb[0], rgb[1], rgb[2]);
+        } else if(rgb.length == 4) {
+            gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
+        }
+        line(gl, from, to);
+        gl.glColor3f(1,1,1);
     }
 
     public static void circle(GL2 gl, Vector center, Vector scale, float radius, float quality) {
@@ -77,6 +78,33 @@ public class QuickDraw {
             gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
         }
         circle(gl, center, scale, radius, quality);
+        gl.glColor3f(1,1,1);
+    }
+
+    public static void circleCutout(GL2 gl, Vector center, Vector scale, float radius, float quality, float minR, float maxR) {
+        center = center.toFixed();
+        Vector right = new Vector(radius, 0).toFixed();
+
+        Vector tmp, last = center.add(right.multiply(scale).rotate(minR));
+
+        gl.glBegin(GL.GL_LINES);
+
+        for(float i = minR; i <= maxR; i += 1/quality) {
+            tmp = center.add(right.rotate(i).multiply(scale));
+            gl.glVertex2f(last.x, last.y);
+            gl.glVertex2f(tmp.x, tmp.y);
+            last = tmp;
+        }
+        gl.glEnd();
+    }
+
+    public static void circleCutout(GL2 gl, Vector center, Vector scale, float radius, float quality, float minR, float maxR, float[] rgb) {
+        if(rgb.length == 3) {
+            gl.glColor3f(rgb[0], rgb[1], rgb[2]);
+        } else if(rgb.length == 4) {
+            gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
+        }
+        circleCutout(gl, center, scale, radius, quality, minR, maxR);
         gl.glColor3f(1,1,1);
     }
 }
