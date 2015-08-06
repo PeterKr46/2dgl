@@ -9,6 +9,7 @@ import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.sprite.texture.SpriteSheet;
 import net.jgl2d.sprite.texture.font.Font;
+import net.jgl2d.sys.Debug;
 import net.jgl2d.transform.Transform;
 
 /**
@@ -16,7 +17,7 @@ import net.jgl2d.transform.Transform;
  */
 public class Launcher {
     public static void main(String[] args) {
-        SpriteSheet sheet = SpriteSheet.load("tilesets/door.png");
+        SpriteSheet sheet = SpriteSheet.load("tilesets/testsheet.png");
         SpriteSheet sheet2 = SpriteSheet.load("tilesets/pickup.png");
         SpriteSheet sheet3 = SpriteSheet.load("tilesets/newtiles.png");
 
@@ -28,9 +29,10 @@ public class Launcher {
         anim.setFrame(20, sheet3.getSprite(4));
         anim.setFrame(25, sheet3.getSprite(5));
         anim.setFrame(30, sheet3.getSprite(6));
-        Animation anim2 = new Animation(60);
+        Animation anim2 = new Animation(30);
         anim2.setFrame(0, sheet.getSprite(0));
-        anim2.setFrame(30, sheet.getSprite(1));
+        anim2.setFrame(10, sheet.getSprite(1));
+        anim2.setFrame(20, sheet.getSprite(2));
 
         Sprite top = sheet3.getSprite(1);
         Sprite topLEnd = sheet3.getSprite(0);
@@ -42,16 +44,19 @@ public class Launcher {
         Transform t = Transform.createEmpty("TL");
         t.addRenderer().setSprite(topLEnd);
         t.position = new Vector(2,1);
-        t.addBehaviour(CharacterController.class);
+        ((CharacterController)t.addBehaviour(CharacterController.class)).offset = new Vector(0.5, 0.5);
         ((TestBehaviour) t.addBehaviour(TestBehaviour.class)).font = Font.load("tilesets/font.png");
+        Animator animator = (Animator) t.addBehaviour(Animator.class);
+        animator.setAnimations(anim, anim2);
+        animator.animation = 1;
         for(float i = 0.95f; i < 3; i+= 0.95) {
             t = Transform.createEmpty("T #" + i);
             t.addRenderer().setSprite(top);
             t.addBehaviour(BoxCollider.class);
             t.position = new Vector(i,0);
-            Animator animator = (Animator) t.addBehaviour(Animator.class);
+            animator = (Animator) t.addBehaviour(Animator.class);
             animator.setAnimations(anim, anim2);
-            animator.animation = 1;
+            animator.animation = 0;
         }
         t = Transform.createEmpty("TR");
         t.addRenderer().setSprite(topREnd);

@@ -19,6 +19,13 @@ import java.awt.event.WindowEvent;
  */
 public class Camera implements GLEventListener {
 
+
+    private boolean paused = false;
+
+    public static float deltaTime() {
+        return (main == null ? 0 : main.deltatime);
+    }
+
     private static Camera main = null;
 
     public static Camera main() {
@@ -33,6 +40,9 @@ public class Camera implements GLEventListener {
     private GLCapabilities glCapabilities;
 
     private boolean debuggingEnabled = true;
+
+    private long lastFrame = System.currentTimeMillis();
+    private float deltatime = 0f;
 
     public Camera() {
         if(main == null) {
@@ -145,7 +155,9 @@ public class Camera implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
-        render(drawable);
+        if(!paused) {
+            render(drawable);
+        }
     }
 
 
@@ -191,6 +203,9 @@ public class Camera implements GLEventListener {
     }
 
     private void render(GLAutoDrawable drawable) {
+        deltatime = System.currentTimeMillis() - lastFrame;
+        deltatime /= 1000f;
+        lastFrame = System.currentTimeMillis();
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         drawGrid(drawable);

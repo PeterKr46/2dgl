@@ -36,10 +36,12 @@ public class TestBehaviour extends Behaviour {
         if(contrl.isGrounded()) {
             velocity = 0f;
         }
-        contrl.translate(new Vector(0,velocity));
+        float speed = 1 * Camera.deltaTime() * (Input.isKeyDown('a') ? -1 : (Input.isKeyDown('d') ? 1 : 0));
+        contrl.translate(new Vector(speed,velocity));
         if(font != null) {
-            font.write(drawable.getGL().getGL2(), transform.position, "Text - fonts and stuff!", 0.5f, transform.rotation, new float[] {0,0,0, 0.8f});
+            font.write(drawable.getGL().getGL2(), transform.position, "FPS " + Math.round(1f/Camera.deltaTime()), 0.5f, transform.rotation, new float[] {0,0,0, 0.8f});
         }
+        Debug.log(transform.position);
     }
 
     @Override

@@ -11,12 +11,14 @@ import net.jgl2d.math.area.RectArea;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
 
+import java.util.Stack;
+
 /**
  * Created by Peter on 28.07.2015.
  */
 public class CharacterController extends Behaviour {
     private float height = 1, radius = 0.25f;
-    private Area[] areas;
+    public Vector offset;
 
     public CharacterController(Transform transform) {
         super(transform);
@@ -55,16 +57,17 @@ public class CharacterController extends Behaviour {
     }
 
     public void translate(Vector delta) {
+        //TODO: Absolutely horrific implementation.
         Vector origin = transform.position.toFixed();
-        delta = delta.toFixed();
-        Area head = getHeadArea();
-        Area body = getBodyArea();
-        Area feet = getFeetArea();
-        float f = 0f;
-        boolean collided = true;
-        while(collided && f <= 1f) {
-            transform.position = origin.add(delta.multiply(f,f));
+        Vector direction = delta.clone().normalize().divide(100);
+        Vector mv = new Vector(0,0);
+        boolean collided = false;
+        while(!collided && mv.sqrMagnitude() <= delta.sqrMagnitude()) {
+            transform.position = origin.add(mv);
             collided = false;
+            Area head = getHeadArea();
+            Area body = getBodyArea();
+            Area feet = getFeetArea();
             for (Collider coll : Collider.getColliders()) {
                 if (coll.toArea().overlaps(head)) {
                     collided = true;
@@ -76,17 +79,17 @@ public class CharacterController extends Behaviour {
                     collided = true;
                 }
             }
-            f += 0.1f;
+            mv.add(direction);
         }
-        transform.position = origin.add(delta.multiply(f,f));
+        transform.position = origin.add(mv);
     }
 
     private Vector getUpperCenter() {
-        return transform.position.clone().add(0,(height-2*radius)/2);
+        return transform.position.clone().add(offset).add(0,(height-2*radius)/2);
     }
 
     private Vector getLowerCenter() {
-        return transform.position.clone().add(0,-(height-2*radius)/2);
+        return transform.position.clone().add(offset).add(0,-(height-2*radius)/2);
     }
 
     protected void draw(GLAutoDrawable drawable) {

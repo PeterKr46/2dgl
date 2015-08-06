@@ -97,12 +97,38 @@ public class Vector {
         return new Vector(to.x - from.x, to.y - from.y);
     }
 
+    public static double getAngle(Vector a, Vector b)
+    {
+        // a * b
+        double top = (a.x * b.x) + (a.y * b.y);
+        // |a|
+        double sumA = a.magnitude();
+        // |b|
+        double sumB = b.magnitude();
+        double total = top / (sumA * sumB);
+        return Math.acos(Math.toRadians(total))*180/Math.PI;
+    }
+
+    public static double dotProd(Vector a, Vector b) {
+        return a.x * b.x + a.y * b.y;
+    }
+
     public float sqrMagnitude() {
         return (float) (Math.pow(x,2) + Math.pow(y,2));
     }
 
     public float magnitude() {
         return (float) Math.sqrt(sqrMagnitude());
+    }
+
+    public Vector normalize() {
+        if(x == 0 && y == 0) {
+            return this;
+        }
+        double sc = 1.0/magnitude();
+        this.x *= sc;
+        this.y *= sc;
+        return this;
     }
 
     public static class FixedVector extends Vector {
@@ -159,6 +185,11 @@ public class Vector {
         @Override
         public void setY(float y) {
             super.clone().setY(y);
+        }
+
+        @Override
+        public Vector normalize() {
+            return super.clone().normalize();
         }
     }
 }

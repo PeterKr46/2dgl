@@ -43,9 +43,11 @@ public class Font extends SpriteSheet {
                 new char[] {'p','q','r','s','t'},
                 new char[] {'u','v','w','x','y'},
                 new char[] {'z','.','!','?','-'},
+                new char[] {'0','1','2','3','4'},
+                new char[] {'5','6','7','8','9'},
         };
         for(int x = 0; x < 5; x++) {
-            for(int y = 0; y < 6; y++) {
+            for(int y = 0; y < 8; y++) {
                 Sprite sprite = new Sprite(font, new Rect(x*8 + 1, y*8, 6, 8), fontName + "_" + layout[y][x]);
                 font.fonts.put(layout[y][x], sprite);
             }
