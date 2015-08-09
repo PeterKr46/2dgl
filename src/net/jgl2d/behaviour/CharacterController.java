@@ -1,12 +1,13 @@
 package net.jgl2d.behaviour;
 
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.collider.Collider;
 import net.jgl2d.math.Vector;
 import net.jgl2d.math.area.Area;
 import net.jgl2d.math.area.CircleArea;
+import net.jgl2d.math.area.CombinedArea;
 import net.jgl2d.math.area.RectArea;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
@@ -54,6 +55,10 @@ public class CharacterController extends Behaviour {
             }
         }
         draw(drawable);
+    }
+
+    public Area toArea() {
+        return new CombinedArea(getHeadArea(), getBodyArea(), getFeetArea());
     }
 
     public void translate(Vector delta) {

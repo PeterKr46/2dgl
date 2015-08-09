@@ -1,7 +1,7 @@
 package net.jgl2d.transform;
 
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.input.Input;

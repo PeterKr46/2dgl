@@ -1,5 +1,7 @@
 package net.jgl2d.math;
 
+import net.jgl2d.util.Mathf;
+
 /**
  * Created by peter on 7/18/15.
  */
@@ -20,14 +22,28 @@ public class Vector {
     }
 
     public Vector(double x, double y) {
-        this.x = (float) x;
-        this.y = (float) y;
+        this.x = Mathf.round(x);
+        this.y = Mathf.round(y);
+    }
+
+    public Vector getOrth() {
+        if(x == 0) {
+            return Vector.up();
+        }
+        if(y == 0) {
+            return Vector.right();
+        }
+        return new Vector(-y, x);
     }
 
 
     @Override
     public Vector clone() {
         return new Vector(x,y);
+    }
+
+    public Vector subtract(Vector other) {
+        return add(-other.x, -other.y);
     }
 
     public Vector add(Vector other) {
@@ -58,11 +74,15 @@ public class Vector {
         return this;
     }
 
+    public Vector multiply(double factor) {
+        return multiply(factor, factor);
+    }
+
     public Vector multiply(Vector other) {
         return multiply(other.x, other.y);
     }
 
-    public Vector multiply(float x, float y) {
+    public Vector multiply(double x, double y) {
         this.x *= x;
         this.y *= y;
         return this;
@@ -80,8 +100,8 @@ public class Vector {
     public Vector rotate(double a) {
         a = (a / 360f) * 2 * Math.PI;
         float tmpX = this.x;
-        this.x = (float) (x * Math.cos(a) - y * Math.sin(a));
-        this.y = (float) (tmpX * Math.sin(a) + y * Math.cos(a));
+        this.x = Mathf.round(x * Math.cos(a) - y * Math.sin(a));
+        this.y = Mathf.round(tmpX * Math.sin(a) + y * Math.cos(a));
         return this;
     }
 
@@ -93,32 +113,41 @@ public class Vector {
         return new FixedVector(x, y);
     }
 
+    public float getAngle() {
+        if(x == 0) {
+            return (y < 0 ? 180 : 0);
+        } else if(y == 0) {
+            return (x < 0 ? 270 : 90);
+        }
+        float baseAngle = Mathf.round(Math.atan(Math.abs(y)/Math.abs(x)) * 180/Math.PI);
+        if(y < 0) {
+            if(x > 0) {
+                return 90 + baseAngle;
+            }
+            return 180 + baseAngle;
+        } else {
+            if(x > 0) {
+                return baseAngle;
+            }
+            return 270 + baseAngle;
+        }
+    }
+
     public static Vector difference(Vector from, Vector to) {
         return new Vector(to.x - from.x, to.y - from.y);
     }
 
-    public static double getAngle(Vector a, Vector b)
-    {
-        // a * b
-        double top = (a.x * b.x) + (a.y * b.y);
-        // |a|
-        double sumA = a.magnitude();
-        // |b|
-        double sumB = b.magnitude();
-        double total = top / (sumA * sumB);
-        return Math.acos(Math.toRadians(total))*180/Math.PI;
-    }
 
     public static double dotProd(Vector a, Vector b) {
         return a.x * b.x + a.y * b.y;
     }
 
     public float sqrMagnitude() {
-        return (float) (Math.pow(x,2) + Math.pow(y,2));
+        return Mathf.round(Math.pow(x,2) + Math.pow(y,2));
     }
 
     public float magnitude() {
-        return (float) Math.sqrt(sqrMagnitude());
+        return Mathf.round(Math.sqrt(sqrMagnitude()));
     }
 
     public Vector normalize() {
@@ -135,11 +164,6 @@ public class Vector {
 
         public FixedVector(float x, float y) {
             super(x, y);
-        }
-
-        @Override
-        public Vector add(Vector other) {
-            return super.clone().add(other);
         }
 
         @Override
@@ -168,7 +192,7 @@ public class Vector {
         }
 
         @Override
-        public Vector multiply(float x, float y) {
+        public Vector multiply(double x, double y) {
             return super.clone().multiply(x, y);
         }
 

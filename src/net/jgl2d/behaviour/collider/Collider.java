@@ -1,6 +1,6 @@
 package net.jgl2d.behaviour.collider;
 
-import com.jogamp.opengl.GLAutoDrawable;
+import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.math.area.Area;
 import net.jgl2d.transform.Transform;
