@@ -1,7 +1,6 @@
 package net.jgl2d.math.area;
 
 import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
 
 import net.jgl2d.Camera;
 import net.jgl2d.math.Ray;
@@ -9,6 +8,7 @@ import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;
 import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
+import sun.org.mozilla.javascript.tools.shell.Global;
 
 /**
  * Created by Peter on 22.07.2015.
@@ -31,34 +31,46 @@ public class RectArea implements Area {
     }
 
     @Override
-    public Pair<Vector, Float> cast(Ray ray, GLAutoDrawable debug) {
-        Vector right = new Vector(size.x,0).rotate(-rotation);
-        Vector up = new Vector(0,size.y).rotate(-rotation);
-        Vector topLeft = position.clone().add(up);
-        Vector botRight = position.clone().add(right);
-        Vector botLeft = position.clone();
-        Ray rRight = new Ray(botRight, up);
-        Ray rLeft = new Ray(botLeft, up);
-        Ray rTop = new Ray(topLeft, right);
-        Ray rBot = new Ray(botLeft, right);
-        Triplet<Vector, Float, Float> iBot = rBot.intersect(ray);
-        Triplet<Vector, Float, Float> iTop = rTop.intersect(ray);
-        Triplet<Vector, Float, Float> iLeft = rLeft.intersect(ray);
-        Triplet<Vector, Float, Float> iRight = rRight.intersect(ray);
-        Triplet<Vector, Float, Float> closest = null;
-        if(iBot != null && iBot.b >= 0 && iBot.b <= 1) {
-            closest = iBot;
+    public Pair<Vector, Float> cast(Ray ray, GL2 debug) {
+        Ray lRay = new Ray(ray.origin.clone().subtract(position).rotate(-rotation), ray.direction.clone().rotate(-rotation));
+        lRay.visualize(debug);
+        Vector right = new Vector(size.x,0);
+        Vector up = new Vector(0,size.y);
+        Vector topLeft = right.clone().add(up);
+        Vector botRight = right.clone();
+        Vector botLeft = Vector.zero;
+
+        Ray sRight = new Ray(botRight, up);
+        Ray sLeft = new Ray(botLeft, up);
+        Ray sBot = new Ray(botLeft, right);
+        Ray sTop = new Ray(topLeft, right);
+        sRight.visualize(debug);
+        sLeft.visualize(debug);
+        sBot.visualize(debug);
+        sTop.visualize(debug);
+
+        Triplet<Vector, Float, Float> iRight = sRight.intersect(lRay);
+        Triplet<Vector, Float, Float> iLeft = sLeft.intersect(lRay);
+        Triplet<Vector, Float, Float> iBottom = sBot.intersect(lRay);
+        Triplet<Vector, Float, Float> iTop = sTop.intersect(lRay);
+        Triplet<Vector, Float, Float> hit = null;
+        if(iRight != null && iRight.b >= 0 && iRight.b <= 1) {
+            hit = iRight;
         }
-        if(iTop != null && iTop.b >= 0 && iTop.b <= 1 && (closest == null || closest.c > iTop.c)) {
-            closest = iTop;
+        if(iLeft != null && iLeft.b >= 0 && iLeft.b <= 1 && (hit == null || iLeft.c < hit.c)) {
+            hit = iLeft;
         }
-        if(iLeft != null && iLeft.b >= 0 && iLeft.b <= 1 && (closest == null || closest.c > iLeft.c)) {
-            closest = iLeft;
+        if(iBottom != null && iBottom.b >= 0 && iBottom.b <= 1 && (hit == null || iBottom.c < hit.c)) {
+            hit = iBottom;
         }
-        if(iRight != null && iRight.b >= 0 && iRight.b <= 1 && (closest == null || closest.c > iRight.c)) {
-            closest = iRight;
+        if(iTop != null && iTop.b >= 0 && iTop.b <= 1 && (hit == null || iTop.c < hit.c)) {
+            hit = iTop;
         }
-        return closest != null ? new Pair<>(closest.a, closest.c) : null;
+        if(hit != null) {
+            Vector pos = hit.a.rotate(rotation).add(position);
+            return new Pair<>(pos, hit.c);
+        }
+        return null;
     }
 
     protected boolean overlapsCorners(Area other) {
@@ -95,6 +107,9 @@ public class RectArea implements Area {
 
         if(area instanceof CircleArea) {
             return area.overlaps(this);
+        }
+        if(area instanceof GlobalFloorArea) {
+            return overlapsCorners(area);
         }
 
         return false;

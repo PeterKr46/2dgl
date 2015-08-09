@@ -92,7 +92,7 @@ public class Input implements MouseMotionListener, MouseInputListener, MouseWhee
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.getKeyChar() == 'd') {
+        if(keyEvent.getKeyCode() == 113) { // 113 = F2
             Camera.main().toggleDebugging();
         }
         keysPressed.put(keyEvent.getKeyChar(), true);

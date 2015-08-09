@@ -18,4 +18,8 @@ public class Mathf {
         float rin = Math.round(din);
         return rin /((float)factor);
     }
+
+    public static float lerp(double start, double end, double percent) {
+        return Mathf.round((end - start) * percent + start);
+    }
 }

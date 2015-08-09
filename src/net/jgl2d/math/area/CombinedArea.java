@@ -4,7 +4,7 @@ import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;
 
-import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GL2;
 
 /**
  * Created by peter on 8/9/15.
@@ -27,7 +27,7 @@ public class CombinedArea implements Area {
     }
 
     @Override
-    public Pair<Vector, Float> cast(Ray ray, GLAutoDrawable debug) {
+    public Pair<Vector, Float> cast(Ray ray, GL2 debug) {
         return null; //TODO
     }
 

@@ -42,12 +42,18 @@ public class Ray {
         if(position == null) {
             return Float.NaN;
         }
-        float s1 = Mathf.roundDigits((position.x - origin.x) / direction.x, 3);
-        float s2 = Mathf.roundDigits((position.y - origin.y) / direction.y, 3);
+        Vector delta = position.clone().subtract(origin);
+        float s1 = Mathf.roundDigits(delta.x / direction.x, 3);
+        float s2 = Mathf.roundDigits(delta.y / direction.y, 3);
         if(s1 == s2) {
             return s1;
         }
-        Debug.log(s1 + " != " + s2);
+        if(delta.x == 0 && direction.x == 0) {
+            return s2;
+        }
+        if(delta.y == 0 && direction.y == 0) {
+            return s1;
+        }
         return Float.NaN;
     }
 
@@ -69,21 +75,26 @@ public class Ray {
         if(localDir.x == 0) { // Parallel to y-Axis -> Parallel to this.
             return null;
         }
+
         if(localDir.y == 0) { // Orthogonal to y-Axis -> Orth to this.
             relative = new Vector(0, localOrigin.y);
         } else {
             localDir.divide(localDir.x); // localDir.x = 1
             relative = new Vector(0, localOrigin.y + localOrigin.x * localDir.y);
         }
+
         relative.rotate(-rot); // Delocalize
         Vector hit = relative.add(origin);
-        float ownScal = Vector.difference(hit, origin).magnitude() / direction.magnitude();
-        float otherScal = Vector.difference(hit, other.origin).magnitude() / other.direction.magnitude();
+        float ownScal = reverseEval(hit);//Vector.difference(origin, hit).magnitude() / direction.magnitude();
+        float otherScal = other.reverseEval(hit);//Vector.difference(other.origin, hit).magnitude() / other.direction.magnitude();
+
         return new Triplet<>(hit, ownScal, otherScal);
     }
 
-    public void visualize(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
+    public void visualize(GL2 gl) {
+        if(gl == null) {
+            return;
+        }
         gl.glColor3f(debugColor[0], debugColor[1], debugColor[2]);
         gl.glBegin(GL.GL_LINES);
 

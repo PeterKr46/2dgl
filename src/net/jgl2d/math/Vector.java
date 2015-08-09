@@ -1,5 +1,6 @@
 package net.jgl2d.math;
 
+import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Mathf;
 
 /**
@@ -7,13 +8,9 @@ import net.jgl2d.util.Mathf;
  */
 public class Vector {
 
-    public static Vector right() {
-        return new Vector(1,0);
-    }
-
-    public static Vector up() {
-        return new Vector(0,1);
-    }
+    public static FixedVector right = new FixedVector(1,0);
+    public static FixedVector up = new FixedVector(0,1);
+    public static FixedVector zero = new FixedVector(0,0);
 
     public float x, y;
     public Vector(float x, float y) {
@@ -28,10 +25,10 @@ public class Vector {
 
     public Vector getOrth() {
         if(x == 0) {
-            return Vector.up();
+            return Vector.right;
         }
         if(y == 0) {
-            return Vector.right();
+            return Vector.up;
         }
         return new Vector(-y, x);
     }
@@ -135,6 +132,27 @@ public class Vector {
 
     public static Vector difference(Vector from, Vector to) {
         return new Vector(to.x - from.x, to.y - from.y);
+    }
+
+    public static boolean isParallel(Vector a, Vector b) {
+        a = a.clone().normalize();
+        b = b.clone().normalize();
+        a.x = Mathf.roundDigits(a.x, 3);
+        a.y = Mathf.roundDigits(a.y, 3);
+        b.x = Mathf.roundDigits(b.x, 3);
+        b.y = Mathf.roundDigits(b.y, 3);
+        return Math.abs(a.x) == Math.abs(b.x) && Math.abs(a.y) == Math.abs(b.y);
+    }
+
+    public static boolean isOpposite(Vector a, Vector b) {
+        if(!isParallel(a,b)) return false;
+        a = a.clone().normalize();
+        b = b.clone().normalize();
+        a.x = Mathf.roundDigits(a.x, 3);
+        a.y = Mathf.roundDigits(a.y, 3);
+        b.x = Mathf.roundDigits(b.x, 3);
+        b.y = Mathf.roundDigits(b.y, 3);
+        return a.x == -b.x && a.y == -b.y;
     }
 
 

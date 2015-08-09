@@ -1,13 +1,12 @@
 package net.jgl2d.math.area;
 
 
-import net.jgl2d.Camera;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Pair;
+import sun.org.mozilla.javascript.tools.shell.Global;
 
-import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GL2;
 
 /**
  * Created by Peter on 26.07.2015.
@@ -28,10 +27,16 @@ public class CircleArea implements Area {
     }
 
     @Override
-    public Pair<Vector, Float> cast(Ray ray, GLAutoDrawable debug) {
+    public Pair<Vector, Float> cast(Ray ray, GL2 debug) {
         Ray counter = new Ray(center, ray.direction.getOrth());
-        counter.visualize(debug);
-        Vector s = ray.intersect(counter).a; // Intersection ray x orth
+        /*counter.debugColor = new float[]{1,1,1};
+        counter.visualize(debug);*/
+        Vector s;
+        try {
+            s = ray.intersect(counter).a; // Intersection ray x orth
+        } catch(NullPointerException e) { // The Ray is pointed the opposite direction, NO overlap.
+            return null;
+        }
         Vector b = s.clone().subtract(center); // Difference center -> s
         if(b.sqrMagnitude() > radius * radius) { // Ray completely misses the circle.
             return null;
@@ -40,7 +45,10 @@ public class CircleArea implements Area {
         Vector a = ray.direction.clone().multiply(-1).normalize();
         a.multiply(Math.sqrt(radius * radius - b.sqrMagnitude()));
         Vector pos = center.clone().add(b).add(a);
-        float scalar = pos.clone().subtract(ray.origin).magnitude() / ray.direction.magnitude();
+        float scalar = ray.reverseEval(pos); //pos.clone().subtract(ray.origin).magnitude() / ray.direction.magnitude();
+        if(scalar < 0) {
+            return null;
+        }
         return new Pair<>(pos, scalar);
     }
 
@@ -64,6 +72,9 @@ public class CircleArea implements Area {
                 return true;
             }
             return false;
+        }
+        if(area instanceof GlobalFloorArea) {
+            return ((GlobalFloorArea) area).yPos >= center.y - radius;
         }
         return false;
     }

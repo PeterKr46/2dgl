@@ -2,6 +2,8 @@ package net.jgl2d.util;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+
+import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
 
 
@@ -106,5 +108,36 @@ public class QuickDraw {
         }
         circleCutout(gl, center, scale, radius, quality, minR, maxR);
         gl.glColor3f(1,1,1);
+    }
+
+    public static void cross(GL2 gl, Vector center, float size) {
+        center = center.toFixed();
+        QuickDraw.line(gl, Camera.main().localize(center.add(-0.1,-0.1)), Camera.main().localize(center.add(0.1,0.1)));
+        QuickDraw.line(gl, Camera.main().localize(center.add(0.1, -0.1)), Camera.main().localize(center.add(-0.1, 0.1)));
+    }
+
+    public static void filledQuad(GL2 gl, Vector a, Vector b, Vector c, Vector d, float[] rgb) {
+        if(rgb.length == 3) {
+            gl.glColor3f(rgb[0], rgb[1], rgb[2]);
+        } else if(rgb.length == 4) {
+            gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
+        }
+        filledQuad(gl, a, b, c, d);
+        gl.glColor3f(1,1,1);
+    }
+
+    public static void filledQuad(GL2 gl, Vector a, Vector b, Vector c, Vector d) {
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2f(a.x, a.y);
+
+        gl.glVertex2f(b.x, b.y);
+
+        gl.glVertex2f(c.x, c.y);
+
+        gl.glVertex2f(d.x, d.y);
+
+        gl.glEnd();
+
     }
 }

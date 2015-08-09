@@ -22,6 +22,7 @@ public class Camera implements GLEventListener {
 
 
     private boolean paused = false;
+    private GL2 gl;
 
     public static float deltaTime() {
         return (main == null ? 0 : main.deltatime);
@@ -31,6 +32,10 @@ public class Camera implements GLEventListener {
 
     public static Camera main() {
         return main;
+    }
+
+    public static GL2 getGL() {
+        return main() != null ? main().gl : null;
     }
 
     private Frame windowFrame;
@@ -156,6 +161,7 @@ public class Camera implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
+        gl = drawable.getGL().getGL2();
         if(!paused) {
             render(drawable);
         }

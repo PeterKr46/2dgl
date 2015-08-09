@@ -4,6 +4,8 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.collider.Collider;
+import net.jgl2d.input.Input;
+import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.math.area.Area;
 import net.jgl2d.math.area.CircleArea;
@@ -11,6 +13,7 @@ import net.jgl2d.math.area.CombinedArea;
 import net.jgl2d.math.area.RectArea;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
+import net.jgl2d.util.Triplet;
 
 import java.util.Stack;
 
@@ -20,6 +23,7 @@ import java.util.Stack;
 public class CharacterController extends Behaviour {
     private float height = 1, radius = 0.25f;
     public Vector offset;
+    public Vector gravity = new Vector(0, -5);
 
     public CharacterController(Transform transform) {
         super(transform);
@@ -29,31 +33,39 @@ public class CharacterController extends Behaviour {
 
     @Override
     public void update(GLAutoDrawable drawable) {
-        grounded = false;
-        wallHit = false;
-        headHit = false;
-        Area head = getHeadArea();
-        Area body = getBodyArea();
-        Area feet = getFeetArea();
-        for (Collider coll : Collider.getColliders()) {
-            boolean hit = false;
-            if (coll.toArea().overlaps(head)) {
-                headHit = true;
-                hit = true;
-            }
-            if (coll.toArea().overlaps(body)) {
-                wallHit = true;
-                hit = true;
-            }
-            if (coll.toArea().overlaps(feet)) {
-                grounded = true;
-                hit = true;
-            }
-
-            if(hit) {
-                transform.sendMessage("onCollide", new Class<?>[]{Collider.class}, new Object[]{coll});
-            }
+        Ray center = new Ray(getLowerCenter().add(0,-radius), gravity);
+        Ray right = new Ray(getLowerCenter().add(radius / 2, radius), gravity);
+        Ray left = new Ray(getLowerCenter().add(-radius / 2, radius), gravity);
+        Triplet<Vector, Collider, Float> hitCenter = Physics.cast(center);
+        Triplet<Vector, Collider, Float> hitLeft = Physics.cast(left);
+        Triplet<Vector, Collider, Float> hitRight = Physics.cast(right);
+        if(hitCenter == null) {
+            hitCenter = new Triplet<>(null, null, Float.MAX_VALUE);
         }
+        if(hitLeft == null) {
+            hitLeft = new Triplet<>(null, null, Float.MAX_VALUE);
+        }
+        if(hitRight == null) {
+            hitRight = new Triplet<>(null, null, Float.MAX_VALUE);
+        }
+        float minY = transform.position.y;
+        if(hitCenter.a != null && hitCenter.a.y < minY) {
+            minY = hitCenter.a.y;
+        }
+        if(hitRight.a != null && hitRight.a.y > minY) {
+            minY = hitRight.a.y;
+        }
+        if(hitLeft.a != null && hitLeft.a.y > minY) {
+            minY = hitLeft.a.y;
+        }
+        float currentdelta = minY - transform.position.y;
+        float moveDelta = gravity.y * Camera.deltaTime();
+        if(currentdelta < 0 && moveDelta > currentdelta) {
+            transform.position.y += moveDelta;
+        } else {
+            transform.position.y = minY;
+        }
+        transform.position.x += (Input.isKeyDown('a') ? -Camera.deltaTime() : Input.isKeyDown('d') ? Camera.deltaTime() : 0);
         draw(drawable);
     }
 
@@ -61,33 +73,6 @@ public class CharacterController extends Behaviour {
         return new CombinedArea(getHeadArea(), getBodyArea(), getFeetArea());
     }
 
-    public void translate(Vector delta) {
-        //TODO: Absolutely horrific implementation.
-        Vector origin = transform.position.toFixed();
-        Vector direction = delta.clone().normalize().divide(100);
-        Vector mv = new Vector(0,0);
-        boolean collided = false;
-        while(!collided && mv.sqrMagnitude() <= delta.sqrMagnitude()) {
-            transform.position = origin.add(mv);
-            collided = false;
-            Area head = getHeadArea();
-            Area body = getBodyArea();
-            Area feet = getFeetArea();
-            for (Collider coll : Collider.getColliders()) {
-                if (coll.toArea().overlaps(head)) {
-                    collided = true;
-                }
-                if (coll.toArea().overlaps(body)) {
-                    collided = true;
-                }
-                if (coll.toArea().overlaps(feet)) {
-                    collided = true;
-                }
-            }
-            mv.add(direction);
-        }
-        transform.position = origin.add(mv);
-    }
 
     private Vector getUpperCenter() {
         return transform.position.clone().add(offset).add(0,(height-2*radius)/2);

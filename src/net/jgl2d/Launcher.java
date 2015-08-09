@@ -6,6 +6,7 @@ import net.jgl2d.behaviour.animation.Animation;
 import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.behaviour.collider.BoxCollider;
 import net.jgl2d.behaviour.collider.CircleCollider;
+import net.jgl2d.behaviour.collider.GlobalFloorCollider;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
@@ -48,17 +49,18 @@ public class Launcher {
         Transform t = Transform.createEmpty("TL");
         t.addRenderer().setSprite(topLEnd);
         t.position = new Vector(2,1);
-        t.addBehaviour(BoxCollider.class);
-        //((CharacterController)t.addBehaviour(CharacterController.class)).offset = new Vector(0.5, 0.5);
-        ((TestBehaviour) t.addBehaviour(TestBehaviour.class)).font = Font.load("tilesets/font.png");
+        //t.addBehaviour(CircleCollider.class);
+        ((CharacterController)t.addBehaviour(CharacterController.class)).offset = new Vector(0.5, 0.5);
+        ((GlobalFloorCollider)t.addBehaviour(GlobalFloorCollider.class)).yPos = -3;
+        //((TestBehaviour) t.addBehaviour(TestBehaviour.class)).font = Font.load("tilesets/font.png");
         Animator animator = (Animator) t.addBehaviour(Animator.class);
         animator.setAnimations(anim, anim2);
         animator.animation = 1;
-        for(float i = 0.95f; i < 3; i+= 1) {
+        for(float i = 0.95f; i < 10; i+= 1) {
             t = Transform.createEmpty("T #" + i);
             t.addRenderer().setSprite(top);
-            t.addBehaviour(BoxCollider.class);
-            t.position = new Vector(i,0);
+            t.addBehaviour(CircleCollider.class);
+            t.position = new Vector(i,Math.random());
         }
         t = Transform.createEmpty("TR");
         t.addRenderer().setSprite(topREnd);
