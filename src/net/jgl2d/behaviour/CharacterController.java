@@ -33,9 +33,12 @@ public class CharacterController extends Behaviour {
 
     @Override
     public void update(GLAutoDrawable drawable) {
-        Ray center = new Ray(getLowerCenter().add(0,-radius), gravity);
-        Ray right = new Ray(getLowerCenter().add(radius / 2, radius), gravity);
-        Ray left = new Ray(getLowerCenter().add(-radius / 2, radius), gravity);
+        Ray center = new Ray(getLowerCenter().add(0,-radius/4), gravity);
+        Ray right = new Ray(getLowerCenter().add(radius / 2, -radius/4), gravity);
+        Ray left = new Ray(getLowerCenter().add(-radius / 2, -radius/4), gravity);
+        center.visualize(drawable.getGL().getGL2());
+        right.visualize(drawable.getGL().getGL2());
+        left.visualize(drawable.getGL().getGL2());
         Triplet<Vector, Collider, Float> hitCenter = Physics.cast(center);
         Triplet<Vector, Collider, Float> hitLeft = Physics.cast(left);
         Triplet<Vector, Collider, Float> hitRight = Physics.cast(right);

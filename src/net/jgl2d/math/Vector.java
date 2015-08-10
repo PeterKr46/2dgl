@@ -121,10 +121,10 @@ public class Vector {
             if(x > 0) {
                 return 90 + baseAngle;
             }
-            return 180 + baseAngle;
+            return 180 + 90-baseAngle;
         } else {
             if(x > 0) {
-                return baseAngle;
+                return 90-baseAngle;
             }
             return 270 + baseAngle;
         }

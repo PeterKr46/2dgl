@@ -3,11 +3,11 @@ package net.jgl2d.math;
 import net.jgl2d.Camera;
 import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Mathf;
+import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Created by Peter on 05.08.2015.
@@ -43,6 +43,8 @@ public class Ray {
             return Float.NaN;
         }
         Vector delta = position.clone().subtract(origin);
+        delta.x = Mathf.round(delta.x);
+        delta.y = Mathf.round(delta.y);
         float s1 = Mathf.roundDigits(delta.x / direction.x, 3);
         float s2 = Mathf.roundDigits(delta.y / direction.y, 3);
         if(s1 == s2) {
@@ -67,6 +69,7 @@ public class Ray {
      * @return A Triplet containing the intersection, the own scalar value of it and the scalar value of the other ray.
      */
     public Triplet<Vector, Float, Float> intersect(Ray other) {
+        //TODO: Some bs is hiding here.
         float rot = calcRotation();
         Vector localOrigin = other.origin.clone().subtract(origin); // TOWARDS OTHER
         localOrigin.rotate(rot);
@@ -80,13 +83,21 @@ public class Ray {
             relative = new Vector(0, localOrigin.y);
         } else {
             localDir.divide(localDir.x); // localDir.x = 1
-            relative = new Vector(0, localOrigin.y + localOrigin.x * localDir.y);
+            relative = new Vector(0, localOrigin.y + (-localOrigin.x * localDir.y));
         }
-
+        float ownScal = relative.magnitude() / direction.magnitude();
+        if(relative.y < 0) ownScal *= -1;
+        float otherScal = Vector.difference(relative, localOrigin).magnitude() / other.direction.magnitude();
+        if(localOrigin.x > 0 ) {
+            otherScal *= -1;
+        }
+        /*Ray tmp = new Ray(localOrigin, localDir);
+        tmp.debugColor = new float[]{0,0.5f,0};
+        tmp.visualize(Camera.getGL());*/
         relative.rotate(-rot); // Delocalize
         Vector hit = relative.add(origin);
-        float ownScal = reverseEval(hit);//Vector.difference(origin, hit).magnitude() / direction.magnitude();
-        float otherScal = other.reverseEval(hit);//Vector.difference(other.origin, hit).magnitude() / other.direction.magnitude();
+        //QuickDraw.cross(Camera.getGL(), hit, 1);
+        //float otherScal = other.reverseEval(hit);//Vector.difference(other.origin, hit).magnitude() / other.direction.magnitude();
 
         return new Triplet<>(hit, ownScal, otherScal);
     }
@@ -95,24 +106,18 @@ public class Ray {
         if(gl == null) {
             return;
         }
-        gl.glColor3f(debugColor[0], debugColor[1], debugColor[2]);
-        gl.glBegin(GL.GL_LINES);
-
+        float[] soft = new float[] {debugColor[0], debugColor[1], debugColor[2], 0.2f};
         Vector dispOrigin = Camera.main().localize(origin);
         Vector dispEnd = Camera.main().localize(eval(1));
         Vector dispL = Camera.main().localize(eval(100));
         Vector dispR = Camera.main().localize(eval(-100));
-        gl.glVertex2f(dispOrigin.x, dispOrigin.y);
-        gl.glColor4f(debugColor[1], debugColor[2], debugColor[0], 0.6f);
-        gl.glVertex2f(dispEnd.x, dispEnd.y);
+        Vector tipL = Camera.main().localize(direction.clone().multiply(-0.15f).rotate(20).add(origin).add(direction));
+        Vector tipR = Camera.main().localize(direction.clone().multiply(-0.15f).rotate(-20).add(origin).add(direction));
 
-        gl.glColor4f(debugColor[0], debugColor[1], debugColor[2], 0.3f);
-        gl.glVertex2f(dispOrigin.x, dispOrigin.y);
-        gl.glVertex2f(dispR.x, dispR.y);
-
-        gl.glVertex2f(dispEnd.x, dispEnd.y);
-        gl.glVertex2f(dispL.x, dispL.y);
-        gl.glEnd();
-        gl.glColor3f(1,1,1);
+        QuickDraw.line(gl, dispOrigin, dispEnd, debugColor);
+        QuickDraw.line(gl, dispEnd, tipL, debugColor);
+        QuickDraw.line(gl, dispEnd, tipR, debugColor);
+        QuickDraw.line(gl, dispEnd, dispL, soft);
+        QuickDraw.line(gl, dispR, dispOrigin, soft);
     }
 }

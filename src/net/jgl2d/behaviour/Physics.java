@@ -26,6 +26,7 @@ public abstract class Physics {
             if(!ign.contains(coll)) {
                 Pair<Vector, Float> tHit = coll.toArea().cast(ray, Camera.getGL());
                 if(tHit != null) {
+                    //QuickDraw.cross(Camera.getGL(), tHit.a, 1);
                     if(hit == null || tHit.b < hit.c) {
                         hit = new Triplet<>(tHit.a, coll, tHit.b);
                     }

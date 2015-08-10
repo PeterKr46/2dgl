@@ -1,5 +1,6 @@
 package net.jgl2d.behaviour;
 
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.collider.BoxCollider;
@@ -24,29 +25,17 @@ public class TestBehaviour extends Behaviour {
 
     public Font font;
 
+    Ray one, two;
     CharacterController contrl;
-    Ray ray;
 
     public TestBehaviour(Transform transform) {
         super(transform);
-        transform.rotation = 45;
-        ray = new Ray(transform.position, new Vector(0,-1));
-        ray.debugColor = new float[] {0,1,0.5f};
     }
 
     @Override
     public void update(GLAutoDrawable drawable) {
-        if(font != null) {
+        /*if(font != null) {
             font.write(drawable.getGL().getGL2(), transform.position, "FPS " + Math.round(1f/Camera.deltaTime()), 0.5f, transform.rotation, new float[] {0,0,0, 0.8f});
-        }
-        /*ray.visualize(drawable);
-        CircleCollider coll = (CircleCollider) transform.getBehaviour(CircleCollider.class);
-        Pair<Vector, Float> point = coll.toArea().cast(ray, drawable);
-        if(point != null) {
-            Debug.log(point.b + " ~ " + ray.reverseEval(point.a));
-            point.a = point.a.toFixed();
-            QuickDraw.line(drawable.getGL().getGL2(), Camera.main().localize(point.a.add(-0.1,-0.1)), Camera.main().localize(point.a.add(0.1,0.1)));
-            QuickDraw.line(drawable.getGL().getGL2(), Camera.main().localize(point.a.add(0.1, -0.1)), Camera.main().localize(point.a.add(-0.1, 0.1)));
         }*/
     }
 
