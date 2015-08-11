@@ -39,7 +39,7 @@ public class GlobalFloorCollider extends Collider{
             if(max.y >= yPos) {
                 QuickDraw.line(drawable.getGL().getGL2(), uL, uR, new float[]{0,1,0,0.8f});
             }
-            QuickDraw.filledQuad(drawable.getGL().getGL2(), uL, uR, bR, bL, new float[] {0,1,0,0.2f});
+            QuickDraw.filledQuad(drawable.getGL().getGL2(), uL, uR, bR, bL, new float[] {0,1,0,0.4f});
         }
     }
 }

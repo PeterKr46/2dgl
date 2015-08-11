@@ -28,7 +28,14 @@ public class CombinedArea implements Area {
 
     @Override
     public Pair<Vector, Float> cast(Ray ray, GL2 debug) {
-        return null; //TODO
+        Pair<Vector, Float> hit = null;
+        for(Area area : parts) {
+            Pair<Vector, Float> tHit = area.cast(ray, debug);
+            if(tHit != null && (hit == null || hit.b > tHit.b)) {
+                hit = tHit;
+            }
+        }
+        return hit;
     }
 
     @Override

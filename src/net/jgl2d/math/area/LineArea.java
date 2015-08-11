@@ -1,11 +1,8 @@
 package net.jgl2d.math.area;
 
-import net.jgl2d.Camera;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Pair;
-import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
 
 import javax.media.opengl.GL2;
@@ -48,7 +45,6 @@ public class LineArea implements Area {
         return null;
     }
 
-    // TODO: Either get rid of overlap entirely or find something for this. - nvm, get rid of it.
     @Override
     public boolean overlaps(Area other) {
         return other.contains(origin) || other.contains(origin.clone().add(length));

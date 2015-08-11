@@ -14,6 +14,7 @@ public class Animator extends Behaviour {
     private int index;
     private int fps = 30;
     private long lastFrame;
+    public boolean paused = false;
 
     public Animator(Transform transform) {
         super(transform);
@@ -54,6 +55,9 @@ public class Animator extends Behaviour {
 
     @Override
     public void update(GLAutoDrawable drawable) {
+        if(paused) {
+            return;
+        }
         long now = System.currentTimeMillis();
         if(now - lastFrame > 1f/fps) {
             lastFrame = now;

@@ -37,7 +37,7 @@ public class SpriteRenderer {
         float rotation = transform.rotation;
         Vector position = transform.position.toFixed();
 
-        Vector bl = position.add(sprite.offset.clone().rotate(rotation)).toFixed();
+        Vector bl = position.add(sprite.offset.clone().multiply(-1).multiply(transform.scale).rotate(rotation)).toFixed();
         Vector tl = bl.add(Vector.up.multiply(scale).rotate(rotation)).toFixed();
         Vector tr = tl.add(Vector.right.multiply(scale).rotate(rotation));
         Vector br = bl.add(Vector.right.multiply(scale).rotate(rotation));

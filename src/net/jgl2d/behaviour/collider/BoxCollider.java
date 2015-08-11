@@ -3,6 +3,8 @@ package net.jgl2d.behaviour.collider;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
+import net.jgl2d.math.area.CombinedArea;
+import net.jgl2d.math.area.LineArea;
 import net.jgl2d.math.area.RectArea;
 import net.jgl2d.math.Vector;
 import net.jgl2d.transform.Transform;
@@ -49,11 +51,16 @@ public class BoxCollider extends Collider {
         gl.glColor3f(1,1,1);
     }
 
-    public RectArea toArea() {
+    public CombinedArea toArea() {
         Vector scale = transform.scale.clone().multiply(size);
         float rotation = transform.rotation;
-        Vector position = transform.position;
-        Vector bl = position.add(offset.clone().rotate(rotation)).toFixed();
-        return new RectArea(bl, rotation, scale.x, scale.y);
+        Vector u = new Vector(0, size.y * scale.y).rotate(rotation);
+        Vector r = new Vector(size.x * scale.x, 0).rotate(rotation);
+        Vector position = transform.position.clone().add(offset.clone().rotate(rotation)).toFixed();
+        LineArea left = new LineArea(position, u);
+        LineArea right = new LineArea(position.add(r), u);
+        LineArea top = new LineArea(position.add(u), r);
+        LineArea bot = new LineArea(position, r);
+        return new CombinedArea(left, right, top, bot);
     }
 }

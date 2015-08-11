@@ -1,6 +1,7 @@
 package net.jgl2d.sprite.texture;
 
 import net.jgl2d.math.Rect;
+import net.jgl2d.math.Vector;
 import net.jgl2d.sys.Debug;
 import net.jgl2d.util.json.JsonReader;
 
@@ -44,7 +45,11 @@ public class SpriteSheet {
                 int y = (int) sprite.get("y");
                 int width = (int) sprite.get("width");
                 int height = (int) sprite.get("height");
-                sheet.sprites.add(new Sprite(sheet, new Rect(x, y, width, height), image.getName() + sprite.get("id") + ""));
+                float ancX = (sprite.containsKey("anchor_x") ? (float) sprite.get("anchor_x") : 0);
+                float ancY = (sprite.containsKey("anchor_y") ? (float) sprite.get("anchor_y") : 0);
+                Sprite spr = new Sprite(sheet, new Rect(x, y, width, height), image.getName() + sprite.get("id") + "");
+                spr.offset = new Vector(ancX, ancY);
+                sheet.sprites.add(spr);
             }
         } else {
             Debug.log("No json found for '" + path + "', creating single sprite.");

@@ -50,6 +50,8 @@ public class Camera implements GLEventListener {
     private long lastFrame = System.currentTimeMillis();
     private float deltatime = 0f;
 
+    public float[] backgroundColor = new float[] {0.15f, 0.15f, 0.15f};
+
     public Camera() {
         if(main == null) {
             main = this;
@@ -171,7 +173,7 @@ public class Camera implements GLEventListener {
 
     private void drawGrid(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glColor3f(0.15f, 0.15f, 0.15f);
+        gl.glColor3f(backgroundColor[0], backgroundColor[1], backgroundColor[2]);
         gl.glBegin(GL2.GL_QUADS);
         gl.glVertex2f(-1, -1);
         gl.glVertex2f(1, -1);
@@ -185,22 +187,23 @@ public class Camera implements GLEventListener {
         gl.glBegin(GL.GL_LINES);
         Vector min = getMin();
         Vector max = getMax();
+        float color = 0.6f;
         for(int i = Math.round(min.x); i < max.x; i++) {
-            float color = 0.2f;
+            float alpha = 0.2f;
             if( i % 10 == 0) {
-                color = 0.4f;
+                alpha = 0.6f;
             }
-            gl.glColor3f(color, color, color);
+            gl.glColor4f(color, color, color, alpha);
             Vector x = localize(new Vector(i,0));
             gl.glVertex2f(x.x, -1);
             gl.glVertex2f(x.x, 1);
         }
         for(int i = Math.round(min.y); i < max.y; i++) {
-            float color = 0.2f;
+            float alpha = 0.2f;
             if( i % 10 == 0) {
-                color = 0.4f;
+                alpha = 0.6f;
             }
-            gl.glColor3f(color, color, color);
+            gl.glColor4f(color, color, color, alpha);
             Vector y = localize(new Vector(0,i));
             gl.glVertex2f(-1, y.y);
             gl.glVertex2f(1, y.y);
