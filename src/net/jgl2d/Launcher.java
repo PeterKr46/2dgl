@@ -5,17 +5,13 @@ import net.jgl2d.behaviour.TestBehaviour;
 import net.jgl2d.behaviour.animation.Animation;
 import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.behaviour.collider.BoxCollider;
-import net.jgl2d.behaviour.collider.CircleCollider;
 import net.jgl2d.behaviour.collider.GlobalFloorCollider;
 import net.jgl2d.behaviour.collider.LineCollider;
-import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.sprite.texture.Sprite;
 import net.jgl2d.sprite.texture.SpriteSheet;
 import net.jgl2d.sprite.texture.font.Font;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.transform.Transform;
-import net.jgl2d.util.Mathf;
 
 /**
  * Created by peter on 7/18/15.
@@ -63,6 +59,9 @@ public class Launcher {
             t.addBehaviour(BoxCollider.class);
             t.position = new Vector(i,1);
         }
+        t = Transform.createEmpty("Wall");
+        t.addBehaviour(LineCollider.class);
+        t.rotation = -90;
         //Debug.log(collA.toArea().overlaps(collB.toArea()));
     }
 }

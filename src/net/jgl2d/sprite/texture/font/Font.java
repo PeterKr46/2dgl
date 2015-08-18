@@ -1,7 +1,7 @@
 package net.jgl2d.sprite.texture.font;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Rect;
 import net.jgl2d.math.Vector;

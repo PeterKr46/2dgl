@@ -1,12 +1,9 @@
 package net.jgl2d.math.area;
 
+import com.jogamp.opengl.GL2;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Pair;
-import net.jgl2d.util.Triplet;
-
-import javax.media.opengl.GL2;
 
 /**
  * Created by peter on 8/9/15.
@@ -29,7 +26,8 @@ public class GlobalFloorArea implements Area {
         float x = ray.xOf(yPos);
         if(x == Float.NaN) return null;
         Vector pos = new Vector(x, yPos);
-        return new Pair<>(pos, ray.reverseEval(pos));
+        float scal = ray.reverseEval(pos);
+        return scal > 0 ? new Pair<>(pos, ray.reverseEval(pos)) : null;
     }
 
     @Override

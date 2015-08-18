@@ -8,8 +8,10 @@ import net.jgl2d.util.Mathf;
  */
 public class Vector {
 
+    public static FixedVector left = new FixedVector(-1,0);
     public static FixedVector right = new FixedVector(1,0);
     public static FixedVector up = new FixedVector(0,1);
+    public static FixedVector down = new FixedVector(0,-1);
     public static FixedVector zero = new FixedVector(0,0);
 
     public float x, y;

@@ -1,12 +1,10 @@
 package net.jgl2d.math.area;
 
 
+import com.jogamp.opengl.GL2;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;
-import sun.org.mozilla.javascript.tools.shell.Global;
-
-import javax.media.opengl.GL2;
 
 /**
  * Created by Peter on 26.07.2015.

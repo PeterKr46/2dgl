@@ -1,8 +1,7 @@
 package net.jgl2d.util;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
 
@@ -25,7 +24,7 @@ public class QuickDraw {
             gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
         }
         line(gl, from, to);
-        gl.glColor3f(1,1,1);
+        gl.glColor3f(1, 1, 1);
     }
 
     public static void circle(GL2 gl, Vector center, Vector scale, float radius, float quality) {
@@ -70,7 +69,7 @@ public class QuickDraw {
             gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
         }
         filledCircle(gl, center, scale, radius, quality);
-        gl.glColor3f(1,1,1);
+        gl.glColor3f(1, 1, 1);
     }
 
     public static void circle(GL2 gl, Vector center, Vector scale, float radius, float quality, float[] rgb) {
@@ -107,13 +106,24 @@ public class QuickDraw {
             gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
         }
         circleCutout(gl, center, scale, radius, quality, minR, maxR);
-        gl.glColor3f(1,1,1);
+        gl.glColor3f(1, 1, 1);
     }
 
-    public static void cross(GL2 gl, Vector center, float size) {
+    public static void cross(GL2 gl, Vector center) {
         center = center.toFixed();
-        QuickDraw.line(gl, Camera.main().localize(center.add(-0.1,-0.1)), Camera.main().localize(center.add(0.1,0.1)));
+        QuickDraw.line(gl, Camera.main().localize(center.add(-0.1, -0.1)), Camera.main().localize(center.add(0.1, 0.1)));
         QuickDraw.line(gl, Camera.main().localize(center.add(0.1, -0.1)), Camera.main().localize(center.add(-0.1, 0.1)));
+    }
+
+    public static void cross(GL2 gl, Vector center, float[] rgb) {
+        if(rgb.length == 3) {
+            gl.glColor3f(rgb[0], rgb[1], rgb[2]);
+        } else if(rgb.length == 4) {
+            gl.glColor4f(rgb[0], rgb[1], rgb[2], rgb[3]);
+
+        }
+        cross(gl, center);
+        gl.glColor3f(1, 1, 1);
     }
 
     public static void filledQuad(GL2 gl, Vector a, Vector b, Vector c, Vector d, float[] rgb) {

@@ -1,7 +1,7 @@
 package net.jgl2d.behaviour;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.animation.Animator;
 import net.jgl2d.behaviour.collider.Collider;
@@ -12,12 +12,9 @@ import net.jgl2d.math.area.Area;
 import net.jgl2d.math.area.CircleArea;
 import net.jgl2d.math.area.CombinedArea;
 import net.jgl2d.math.area.RectArea;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
-
-import java.util.Stack;
 
 /**
  * Created by Peter on 28.07.2015.
@@ -25,7 +22,7 @@ import java.util.Stack;
 public class CharacterController extends Behaviour {
     private float height = 1, radius = 0.25f;
     public Vector offset;
-    public Vector gravity = new Vector(0, -9.81);
+    public Vector gravity = new Vector(0, -13);
     public float currentVertVelocity = 0;
 
     public CharacterController(Transform transform) {
@@ -46,9 +43,9 @@ public class CharacterController extends Behaviour {
         }
         grounded = false;
         if(currentVertVelocity < 0) {
-            Ray center = new Ray(getLowerCenter().add(0,-radius/4), new Vector(0,-1));
-            Ray right = new Ray(getLowerCenter().add(radius / 2, -radius/4), new Vector(0,-1));
-            Ray left = new Ray(getLowerCenter().add(-radius / 2, -radius/4), new Vector(0,-1));
+            Ray center = new Ray(getLowerCenter(), new Vector(0,-1));
+            Ray right = new Ray(getLowerCenter().add(radius*0.8,0), new Vector(0,-1));
+            Ray left = new Ray(getLowerCenter().add(-radius*0.8,0), new Vector(0,-1));
             if(Camera.main().debug()) {
                 center.visualize(drawable.getGL().getGL2());
                 right.visualize(drawable.getGL().getGL2());
@@ -57,15 +54,10 @@ public class CharacterController extends Behaviour {
             Triplet<Vector, Collider, Float> hitCenter = Physics.cast(center);
             Triplet<Vector, Collider, Float> hitLeft = Physics.cast(left);
             Triplet<Vector, Collider, Float> hitRight = Physics.cast(right);
-            if(hitCenter == null) {
-                hitCenter = new Triplet<>(null, null, Float.MAX_VALUE);
-            }
-            if(hitLeft == null) {
-                hitLeft = new Triplet<>(null, null, Float.MAX_VALUE);
-            }
-            if(hitRight == null) {
-                hitRight = new Triplet<>(null, null, Float.MAX_VALUE);
-            }
+            hitCenter = (hitCenter == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitCenter;
+            hitLeft = (hitLeft == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitLeft;
+            hitRight = (hitRight == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitRight;
+
             float minY = transform.position.y;
             if(hitCenter.a != null && hitCenter.a.y < minY) {
                 minY = hitCenter.a.y;
@@ -87,21 +79,59 @@ public class CharacterController extends Behaviour {
                 transform.position.y = minY;
             }
             grounded = hitCenter.c <= radius || hitLeft.c <= radius || hitRight.c <= radius;
-        } else {
-            transform.position.y += currentVertVelocity * Camera.deltaTime();
+        } else if(currentVertVelocity > 0) {
+            Ray center = new Ray(getUpperCenter().add(0, radius/4), new Vector(0,1));
+            Ray right = new Ray(getUpperCenter().add(radius*0.8, radius/4), new Vector(0,1));
+            Ray left = new Ray(getUpperCenter().add(-radius*0.8, radius/4), new Vector(0,1));
+            if(Camera.main().debug()) {
+                center.visualize(drawable.getGL().getGL2());
+                right.visualize(drawable.getGL().getGL2());
+                left.visualize(drawable.getGL().getGL2());
+            }
+            Triplet<Vector, Collider, Float> hitLeft = Physics.cast(left);
+            Triplet<Vector, Collider, Float> hitCenter = Physics.cast(center);
+            Triplet<Vector, Collider, Float> hitRight = Physics.cast(right);
+            hitLeft = (hitLeft == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitLeft;
+            hitCenter = (hitCenter == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitCenter;
+            hitRight = (hitRight == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : hitRight;
+            float minDelta = currentVertVelocity * Camera.deltaTime();
+            minDelta = Math.min(minDelta, hitLeft.c - radius*0.8f);
+            minDelta = Math.min(minDelta, hitRight.c - radius*0.8f);
+            minDelta = Math.min(minDelta, hitCenter.c - radius*0.8f);
+            if(minDelta < currentVertVelocity * Camera.deltaTime()) {
+                currentVertVelocity = 0;
+            }
+            transform.position.y += minDelta;
         }
-        float mvX = (Input.isKeyDown('a') ? -1 : Input.isKeyDown('d') ? 1 : 0);
+        float mvX = (Input.isKeyDown('a') ? -1 : Input.isKeyDown('d') ? 1 : 0) * Camera.deltaTime() * 5;
         if(mvX != 0) {
-            transform.scale.x = mvX;
+            Ray lower = new Ray(getLowerCenter(), mvX > 0 ? Vector.right : Vector.left);
+            Ray upper = new Ray(getUpperCenter().add(0,radius * 0.8), mvX > 0 ? Vector.right : Vector.left);
+            Triplet<Vector, Collider, Float> lowerHit = Physics.cast(lower);
+            Triplet<Vector, Collider, Float> upperHit = Physics.cast(upper);
+            lowerHit = (lowerHit == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : lowerHit;
+            upperHit = (upperHit == null) ? new Triplet<Vector, Collider, Float>(null, null, Float.MAX_VALUE) : upperHit;
+            if (lowerHit.c - radius < Math.abs(mvX)) {
+                mvX = Math.max(0, lowerHit.c - radius) * (mvX < 0 ? -1 : 1);
+            }
+            if (upperHit.c - radius < Math.abs(mvX)) {
+                mvX = Math.max(0, upperHit.c - radius) * (mvX < 0 ? -1 : 1);
+            }
+            if(Camera.main().debug()) {
+                lower.visualize(drawable.getGL().getGL2());
+                upper.visualize(drawable.getGL().getGL2());
+            }
+        }
+        if(mvX != 0) {
+            transform.scale.x = (mvX < 0 ? -1 : 1);
             Animator animator = (Animator) transform.getBehaviour(Animator.class);
             animator.paused = false;
         } else {
             Animator animator = (Animator) transform.getBehaviour(Animator.class);
             animator.paused = true;
         }
-        transform.position.x += mvX * Camera.deltaTime() * 5;
+        transform.position.x += mvX;
         draw(drawable);
-        Debug.log(currentVertVelocity);
     }
 
     public Area toArea() {

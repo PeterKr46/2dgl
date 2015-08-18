@@ -1,6 +1,6 @@
 package net.jgl2d.math.area;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 
 import net.jgl2d.Camera;
 import net.jgl2d.math.Ray;
@@ -8,7 +8,6 @@ import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;
 import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
-import sun.org.mozilla.javascript.tools.shell.Global;
 
 /**
  * Created by Peter on 22.07.2015.

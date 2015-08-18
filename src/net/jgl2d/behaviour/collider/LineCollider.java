@@ -1,13 +1,12 @@
 package net.jgl2d.behaviour.collider;
 
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.math.Vector;
 import net.jgl2d.math.area.Area;
 import net.jgl2d.math.area.LineArea;
 import net.jgl2d.transform.Transform;
 import net.jgl2d.util.QuickDraw;
-
-import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Created by peter on 8/9/15.

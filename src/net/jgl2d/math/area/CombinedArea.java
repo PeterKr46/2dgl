@@ -1,10 +1,9 @@
 package net.jgl2d.math.area;
 
+import com.jogamp.opengl.GL2;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;
-
-import javax.media.opengl.GL2;
 
 /**
  * Created by peter on 8/9/15.

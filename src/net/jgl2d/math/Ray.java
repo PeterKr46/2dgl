@@ -1,13 +1,13 @@
 package net.jgl2d.math;
 
+import com.jogamp.opengl.GL2;
 import net.jgl2d.Camera;
-import net.jgl2d.sys.Debug;
 import net.jgl2d.util.Mathf;
 import net.jgl2d.util.QuickDraw;
 import net.jgl2d.util.Triplet;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+//import com.jogamp.opengl.GL;
+//import com.jogamp.opengl.GL2;
 
 /**
  * Created by Peter on 05.08.2015.
@@ -88,17 +88,16 @@ public class Ray {
         float ownScal = relative.magnitude() / direction.magnitude();
         if(relative.y < 0) ownScal *= -1;
         float otherScal = Vector.difference(relative, localOrigin).magnitude() / other.direction.magnitude();
-        if(localOrigin.x > 0 ) {
+        if((localOrigin.x > 0 && localDir.x > 0) || (localOrigin.x < 0 && localDir.x < 0)) {
             otherScal *= -1;
         }
-        /*Ray tmp = new Ray(localOrigin, localDir);
-        tmp.debugColor = new float[]{0,0.5f,0};
-        tmp.visualize(Camera.getGL());*/
         relative.rotate(-rot); // Delocalize
         Vector hit = relative.add(origin);
-        //QuickDraw.cross(Camera.getGL(), hit, 1);
-        //float otherScal = other.reverseEval(hit);//Vector.difference(other.origin, hit).magnitude() / other.direction.magnitude();
-
+        /*if(ownScal >= 0 && ownScal <= 1 && otherScal > 0) {
+            QuickDraw.cross(Camera.getGL(), hit, new float[]{0,1,0});
+        } else if(otherScal < 0) {
+            QuickDraw.cross(Camera.getGL(), hit, new float[]{1,0,0});
+        }*/
         return new Triplet<>(hit, ownScal, otherScal);
     }
 

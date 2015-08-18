@@ -1,7 +1,7 @@
 package net.jgl2d.transform;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.input.Input;
@@ -132,7 +132,7 @@ public class Transform {
     }
 
     private void drawArrows(GLAutoDrawable drawable) {
-        if(Camera.main().debug()) {
+        if(Camera.main().debug()) { //&& Vector.difference(Camera.main().screenToWorldPos(Input.getPercentiveMousePosition()), position).sqrMagnitude() <= 25) {
             GL2 gl = drawable.getGL().getGL2();
             Camera cam = Camera.main();
 
