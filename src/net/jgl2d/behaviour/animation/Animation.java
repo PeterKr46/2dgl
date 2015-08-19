@@ -40,6 +40,6 @@ public class Animation {
     }
 
     public Sprite getSprite(int i) {
-        return sFrames[i];
+        return i >= sFrames.length ? null : sFrames[i];
     }
 }

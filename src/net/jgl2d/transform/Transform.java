@@ -38,10 +38,21 @@ public class Transform {
 
     private List<Behaviour> behaviours = new ArrayList<>();
     private SpriteRenderer renderer;
+    private int ticksLived = 0;
 
     private Transform(String name) {
         transforms.add(this);
         this.name = name;
+    }
+
+    public boolean removeBehaviour(Class<? extends Behaviour> cls) {
+        for(Behaviour b : behaviours) {
+            if(b.getClass() ==  cls) {
+                behaviours.remove(b);
+                return true;
+            }
+        }
+        return false;
     }
 
     public Behaviour addBehaviour(Class<? extends Behaviour> cls) {
@@ -125,10 +136,16 @@ public class Transform {
     }
 
     public void updateBehaviours(GLAutoDrawable drawable) {
+        if(ticksLived == 0) {
+            for(Behaviour behaviour : behaviours) {
+                behaviour.start();
+            }
+        }
         for(Behaviour behaviour : behaviours) {
             behaviour.update(drawable);
         }
         drawArrows(drawable);
+        ticksLived++;
     }
 
     private void drawArrows(GLAutoDrawable drawable) {

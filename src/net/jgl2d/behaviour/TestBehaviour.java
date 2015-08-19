@@ -1,7 +1,8 @@
 package net.jgl2d.behaviour;
 
 import com.jogamp.opengl.GLAutoDrawable;
-import net.jgl2d.behaviour.collider.Collider;
+import net.jgl2d.behaviour.character.CharacterController;
+import net.jgl2d.behaviour.physics.Collider;
 import net.jgl2d.math.Ray;
 import net.jgl2d.sprite.texture.font.Font;
 import net.jgl2d.transform.Transform;

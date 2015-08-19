@@ -3,6 +3,7 @@ package net.jgl2d.behaviour.animation;
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.behaviour.Behaviour;
 import net.jgl2d.sprite.texture.Sprite;
+import net.jgl2d.sys.Debug;
 import net.jgl2d.transform.Transform;
 
 /**
@@ -11,7 +12,7 @@ import net.jgl2d.transform.Transform;
 public class Animator extends Behaviour {
     public int animation;
     private Animation[] animations;
-    private int index;
+    protected int index = 0;
     private int fps = 30;
     private long lastFrame;
     public boolean paused = false;
@@ -47,6 +48,7 @@ public class Animator extends Behaviour {
             return null;
         }
         int i = index;
+        Debug.log(index);
         while(getAnimation().getSprite(i) == null && i > 0) {
             i--;
         }

@@ -1,10 +1,11 @@
-package net.jgl2d.behaviour;
+package net.jgl2d.behaviour.character;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.Camera;
-import net.jgl2d.behaviour.animation.Animator;
-import net.jgl2d.behaviour.collider.Collider;
+import net.jgl2d.behaviour.Behaviour;
+import net.jgl2d.behaviour.physics.Collider;
+import net.jgl2d.behaviour.physics.Physics;
 import net.jgl2d.input.Input;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
@@ -29,7 +30,7 @@ public class CharacterController extends Behaviour {
         super(transform);
     }
 
-    private boolean grounded = false, wallHit = false, headHit = false;
+    private boolean grounded = false, moving = false;
 
     @Override
     public void update(GLAutoDrawable drawable) {
@@ -124,13 +125,9 @@ public class CharacterController extends Behaviour {
         }
         if(mvX != 0) {
             transform.scale.x = (mvX < 0 ? -1 : 1);
-            Animator animator = (Animator) transform.getBehaviour(Animator.class);
-            animator.paused = false;
-        } else {
-            Animator animator = (Animator) transform.getBehaviour(Animator.class);
-            animator.paused = true;
         }
         transform.position.x += mvX;
+        moving = mvX != 0;
         draw(drawable);
     }
 
@@ -188,11 +185,7 @@ public class CharacterController extends Behaviour {
         return grounded;
     }
 
-    public boolean isWallHit() {
-        return wallHit;
-    }
-
-    public boolean isHeadHit() {
-        return headHit;
+    public boolean isMoving() {
+        return moving;
     }
 }

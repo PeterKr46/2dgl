@@ -1,7 +1,6 @@
-package net.jgl2d.behaviour;
+package net.jgl2d.behaviour.physics;
 
 import net.jgl2d.Camera;
-import net.jgl2d.behaviour.collider.Collider;
 import net.jgl2d.math.Ray;
 import net.jgl2d.math.Vector;
 import net.jgl2d.util.Pair;

@@ -1,4 +1,4 @@
-package net.jgl2d.behaviour.collider;
+package net.jgl2d.behaviour.physics;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import net.jgl2d.behaviour.Behaviour;
